@@ -74,12 +74,12 @@ app.get('/server/:id', function(req, res){
 app.put('/server', function(req, res){
     model_server.findOne({_id: req.body._id}, function(err, server){
         if (server){
-            model_server.name = req.body.name;
-            model_server.rpc_url =  req.body.rpc_url;
-            model_server.rpc_user = req.body.rpc_user;
-            model_server.rpc_pass = req.body.rpc_pass;
-            model_server.obs =  req.body.obs;
-            model_server.save();
+            server.name = req.body.name;
+            server.rpc_url =  req.body.rpc_url;
+            server.rpc_user = req.body.rpc_user;
+            server.rpc_pass = req.body.rpc_pass;
+            server.obs =  req.body.obs;
+            server.save();
             res.send('Server editado com sucesso');
         }else{
             res.send('Servidor não existe');
@@ -90,7 +90,7 @@ app.put('/server', function(req, res){
 app.delete('/server/:id', function(req, res){
     model_server.findOne({_id: req.params.id}, function(err, server){
         if(server){
-            model_server.remove();
+            server.remove();
             res.send('Servidor removido com sucesso')
         }else{
             res.send('Servidor não existe')
