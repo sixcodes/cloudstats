@@ -18,14 +18,15 @@
 </head>
   <body ng-app="dashSupervisorFrontApp">
     <div class="container">
-            <div class="container">
+            <div class="container" ng-controller="NavbarCtrl">
                 <div class="navbar navbar-inverse navbar-fixed-top">
                   <div class="navbar-inner">
                     <a class="brand" href="#">Dashboard</a>
                     <ul class="nav">
-                      <li class="active"><a href="#">Home</a></li>
-                      <li><a href="#">Servidores</a></li>
-                      <li><a href="#">Settings</a></li>
+                      <li ng-repeat="(index, link) in _links" class="{{_active[link['name']]}}">
+                          <a href="#/{{link['url']}}"
+                             ng-click=activate(link['name'])>{{link['name']}}</a>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -58,6 +59,7 @@
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/Navbar.js"></script>
         <!-- endbuild -->
 </body>
 </html>
