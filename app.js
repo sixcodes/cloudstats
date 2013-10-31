@@ -1,13 +1,13 @@
 
 var mongoose = require('mongoose');
 var db = require('./database');
-var server = mongoose.model('server');
+var model_server = mongoose.model('server');
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path');
-
+var io = require('socket.io');
 
 
 var app = express();
@@ -42,12 +42,12 @@ app.post('/server', function(req, res){
         rpc_pass: req.body.rpc_pass,
         obs: req.body.obs
     });
-    newServer.save();
+    newmodel_server.save();
     res.send('Servidor adicionado com sucesso');
 });
 
 app.get('/server', function(req, res){
-    server.find({}, function(err, server){
+    model_server.find({}, function(err, server){
         if(server){
             res.send(server);
         }else{
@@ -57,7 +57,7 @@ app.get('/server', function(req, res){
 });
 
 app.get('/server/:id', function(req, res){
-    server.findOne({_id:req.params.id}, function(err, server){
+    model_server.findOne({_id:req.params.id}, function(err, server){
         if(server){
             res.send(server);
         }else{
@@ -67,14 +67,14 @@ app.get('/server/:id', function(req, res){
 });
 
 app.put('/server', function(req, res){
-    server.findOne({_id: req.body._id}, function(err, server){
+    model_server.findOne({_id: req.body._id}, function(err, server){
         if (server){
-            server.name = req.body.name;
-            server.rpc_url =  req.body.rpc_url;
-            server.rpc_user = req.body.rpc_user;
-            server.rpc_pass = req.body.rpc_pass;
-            server.obs =  req.body.obs;
-            server.save();
+            model_server.name = req.body.name;
+            model_server.rpc_url =  req.body.rpc_url;
+            model_server.rpc_user = req.body.rpc_user;
+            model_server.rpc_pass = req.body.rpc_pass;
+            model_server.obs =  req.body.obs;
+            model_server.save();
             res.send('Server editado com sucesso');
         }else{
             res.send('Servidor não existe');
@@ -83,9 +83,9 @@ app.put('/server', function(req, res){
 });
 
 app.delete('/server/:id', function(req, res){
-    server.findOne({_id: req.params.id}, function(err, server){
+    model_server.findOne({_id: req.params.id}, function(err, server){
         if(server){
-            server.remove();
+            model_server.remove();
             res.send('Servidor removido com sucesso')
         }else{
             res.send('Servidor não existe')
@@ -93,6 +93,23 @@ app.delete('/server/:id', function(req, res){
     })
 });
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app);
+server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
+});
+
+var server_io = io.listen(server);
+server_io.sockets.on('status', function (socket) {
+
+});
+
+app.post('/event', function(req, res){
+    console.log(req.body);
+    res.send("ACK");
+    server_io.sockets.emit("status_changed", {hostname: req.body.hostname,
+        process: req.body.processname,
+        from_state: req.body.from_state,
+        to_state: req.body.to_state
+        }
+    );
 });
