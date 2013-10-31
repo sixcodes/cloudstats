@@ -9,6 +9,7 @@ var serverSchema = new Schema({
     rpc_url: String,
     rpc_user: String,
     rpc_pass: String,
-    obs: String
+    obs: String,
+    admin_email: String
 });
 var server = db.model('server', serverSchema);

@@ -4,19 +4,19 @@ var db = require('./database');
 var rpc = require('./rpc');
 var model_server = mongoose.model('server');
 var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , http = require('http')
-  , path = require('path');
+    , routes = require('./routes')
+    , user = require('./routes/user')
+    , http = require('http')
+    , path = require('path');
 var io = require('socket.io');
-
-
 var app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
+app.set("smtp_user", process.env.SMTP_USER);
+app.set("smtp_pass", process.env.SMTP_PASS);
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
@@ -26,9 +26,12 @@ app.use(express.session());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+var sendgrid = require("sendgrid")(app.get("smtp_user"), app.get("smtp_pass"));
+var Email = sendgrid.Email;
+
 // development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+    app.use(express.errorHandler());
 }
 
 app.get('/', routes.index);
@@ -105,7 +108,7 @@ app.delete('/server/:id', function(req, res){
 
 var server = http.createServer(app);
 server.listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+    console.log('Express server listening on port ' + app.get('port'));
 });
 
 var server_io = io.listen(server);
@@ -121,6 +124,26 @@ app.post('/event', function(req, res){
         process: req.body.processname,
         from_state: req.body.from_state,
         to_state: req.body.to_state
-        }
-    );
-});
+    });
+    if (req.body.from_state == "RUNNING" && (req.body.to_state == "STOPPING" || req.body.to_state == "STOPPED" || req.body.to_state == "EXITED")) {
+        model_server.findOne({name: req.body.hostname}, function(err, server){
+            if (server){
+                var email = new Email({
+                    to:       server.admin_email,
+                    from:     'supervisord@sieve.com.br',
+                    subject:  '[supervisord] ' + req.body.processname + " parou no servidor " + req.body.hostname,
+                    text:     'Verifique em ' + server.rpc_url
+                });
+                email.addCategory("alert_supervisor");
+                sendgrid.send(email,
+                    function(err, json) {
+                        if (err) { return console.error(err); }
+                        console.log(json);
+                    });
+            }
+            else {
+                console.log("Servidor não encontrado");
+            }
+        });
+    }
+})
