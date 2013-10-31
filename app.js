@@ -73,9 +73,26 @@ app.get('/server/:id', function(req, res){
             client._call("getAllProcessInfo", function(data){
                 res.send(data);
             });
-            console.log(rpc);
         }else{
             res.send('Ainda não há servidores cadastrados');
+        }
+    })
+});
+
+app.post('/server/:id/:action', function(req, res){
+    model_server.findOne({_id:req.params.id}, function(err, server){
+        if(server){
+            options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
+            var client = rpc._actionProcess(options, req.body.process);
+            client._call( req.params.action + "Process", function(data){
+                if(data){
+                    res.writeHead(200, {'Content-Type': 'text/plain'});
+                }else{
+                    res.writeHead(500, {'Content-Type': 'text/plain'});
+                }
+            });
+        }else{
+            res.send('Este servidor não existe, por favor verifique.');
         }
     })
 });
