@@ -35,19 +35,17 @@ app.get('/users', user.list);
 
 app.post('/server', function(req, res){
     console.log(req.body);
-    var newServer = server({
+    var newServer = model_server({
         name: req.body.name,
         rpc_url: req.body.rpc_url,
         rpc_user: req.body.rpc_user,
         rpc_pass: req.body.rpc_pass,
         obs: req.body.obs
     });
-    newmodel_server.save();
     var valid = req.body.name && req.body.rpc_url;
     if (valid){
         newServer.save();
         res.send('Servidor adicionado com sucesso');
-
     }else {
         res.status(400).send({data: "Nome e URL sao obrigatorios"});
     }
