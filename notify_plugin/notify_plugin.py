@@ -19,10 +19,11 @@ def main():
 
     while 1:
         headers, payload = childutils.listener.wait(sys.stdin, sys.stdout)
-        sys.stderr.write("{}\n\n".format(headers))
-        sys.stderr.write("{}\n\n".format(payload))
+        pheaders, pdata = childutils.eventdata(payload+'\n')
+        sys.stderr.write("PHEADERS {}\n".format(pheaders))
+        sys.stderr.write("PDATA {}\n".format(pdata))
         #TODO: Send a POST to the Dashboard URL
-        # requests.post(DASHBOARD_URL, data={"key": "value"}
+        # requests.post(DASHBOARD_URL, data=pdata)
         childutils.listener.ok(sys.stdout)
 
 
