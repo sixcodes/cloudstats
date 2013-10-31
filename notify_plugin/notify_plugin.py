@@ -4,6 +4,7 @@ Notify any PROCESS_STATE changes in realtime
 to the dashboard server
 """
 import os
+import socket
 import sys
 
 import requests
@@ -18,13 +19,14 @@ def main():
         return
 
     while 1:
+
         headers, payload = childutils.listener.wait(sys.stdin, sys.stdout)
         pheaders, pdata = childutils.eventdata(payload+'\n')
-        sys.stderr.write("PHEADERS {}\n".format(pheaders))
-        sys.stderr.write("PDATA {}\n".format(pdata))
+        pheaders["hostname"] = socket.gethostname()  # Send hostname
         #TODO: Send a POST to the Dashboard URL
         # requests.post(DASHBOARD_URL, data=pdata)
         childutils.listener.ok(sys.stdout)
+        sys.stderr.flush()
 
 
 if __name__ == "__main__":
