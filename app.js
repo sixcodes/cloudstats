@@ -43,7 +43,14 @@ app.post('/server', function(req, res){
         obs: req.body.obs
     });
     newmodel_server.save();
-    res.send('Servidor adicionado com sucesso');
+    var valid = req.body.name && req.body.rpc_url;
+    if (valid){
+        newServer.save();
+        res.send('Servidor adicionado com sucesso');
+
+    }else {
+        res.status(400).send({data: "Nome e URL sao obrigatorios"});
+    }
 });
 
 app.get('/server', function(req, res){
