@@ -8,38 +8,46 @@
                 <div class="control-group">
                     <label class="control-label" for="inputEmail">Nome</label>
                     <div class="controls">
-                      <input type="text" id="inputEmail" placeholder="Nome">
+                      <input type="text" id="inputEmail" placeholder="Nome"
+                             ng-model="server.name" name="sName"
+                             required>
+                        <div _ng-show="form.sName.$dirty">
+                            <span ng-show="form.sName.$error.required">Informe o nome do servidor.</span>
+                        </div>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="url">URL</label>
                     <div class="controls">
-                      <input type="text" id="url" placeholder="Url do supervisord">
+                      <input type="url" id="url" placeholder="Url do supervisord" ng-model="server.rpc_url"
+                             required>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="user">Login</label>
                     <div class="controls">
-                      <input type="text" id="user" placeholder="Login">
+                      <input type="text" id="user" placeholder="Login" ng-model="server.rpc_user"
+                             required>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="pwd">Senha</label>
                     <div class="controls">
-                      <input type="text" id="pwd" placeholder="Senha">
+                      <input type="password" id="pwd" placeholder="Senha" ng-model="server.rpc_pass"
+                             required>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="obs">Observaçoes</label>
                     <div class="controls">
-                      <textarea id="obs" placeholder="Observaçoes gerais" rows="5"></textarea>
+                      <textarea id="obs" placeholder="Observaçoes gerais" rows="5" ng-model="server.obs"></textarea>
                     </div>
                 </div>
 
                 <div class="control-group">
                     <div class="controls">
-                        <button class="btn btn-danger">Reset</button>
-                        <button class="btn btn-primary">Salvar</button>
+                        <button class="btn btn-danger" ng-click="reset()">Reset</button>
+                        <button class="btn btn-primary" ng-click="save(server)">Salvar</button>
                     </div>
                 </div>
             </fieldset>
