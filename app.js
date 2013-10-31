@@ -43,7 +43,8 @@ app.post('/server', function(req, res){
         rpc_url: req.body.rpc_url,
         rpc_user: req.body.rpc_user,
         rpc_pass: req.body.rpc_pass,
-        obs: req.body.obs
+        obs: req.body.obs,
+        admin_email: req.body.admin_email
     });
     var valid = req.body.name && req.body.rpc_url;
     if (valid){
@@ -87,6 +88,7 @@ app.put('/server', function(req, res){
             server.rpc_user = req.body.rpc_user;
             server.rpc_pass = req.body.rpc_pass;
             server.obs =  req.body.obs;
+            server.admin_email = req.body.admin_email;
             server.save();
             res.send('Server editado com sucesso');
         }else{
@@ -146,4 +148,4 @@ app.post('/event', function(req, res){
             }
         });
     }
-})
+});
