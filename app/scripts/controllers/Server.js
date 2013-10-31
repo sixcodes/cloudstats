@@ -31,7 +31,6 @@ angular.module('dashSupervisorFrontApp')
     };
 
     $scope._edit = function (_id){
-        console.log("_edit");
         $location.path("/server/edit/"+_id);
     };
   });

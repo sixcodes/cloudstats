@@ -3,7 +3,7 @@
 angular.module('dashSupervisorFrontApp')
   .controller('ServeraddCtrl', function ($scope, $rootScope, $http) {
       $rootScope.activate("Servidores");
-      $scope.title = "Addind a new Server";
+      $scope.title = "Create Server";
 
       $scope.reset = function (){
           $scope.server = {};
