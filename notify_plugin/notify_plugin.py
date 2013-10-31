@@ -12,8 +12,7 @@ from supervisor import childutils
 
 
 def main():
-
-    if not "SUPERVISOR_SERVER_URL" in os.environ:
+    if not "SUPERVISOR_ENABLED" in os.environ:
         sys.stderr.write("notify_plugin must be run as a supervisor event listener\n")
         sys.stderr.flush()
         return
