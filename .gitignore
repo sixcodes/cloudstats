@@ -48,3 +48,6 @@ nosetests.xml
 .project
 .pydevproject
 .idea
+
+# supervisord
+supervisord.conf
