@@ -12,7 +12,10 @@ logs
 results
 npm-debug.log
 node_modules
-
+# IDE
+.DS_Store*
+.idea*
+*.*~
 # python
 *.py[cod]
 # C extensions
