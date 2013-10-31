@@ -51,3 +51,6 @@ nosetests.xml
 
 # supervisord
 supervisord.conf
+.tmp
+.sass-cache
+app/bower_components
