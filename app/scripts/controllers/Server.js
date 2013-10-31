@@ -17,7 +17,6 @@ angular.module('dashSupervisorFrontApp')
 
     );
 
-
     $scope._remove_from_list = function(list, _id){
         var new_list = [];
         list.forEach(function (server){
