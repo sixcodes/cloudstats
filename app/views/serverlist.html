@@ -16,7 +16,10 @@
             <tr ng-repeat="server in servers">
                 <td><a ng-href="#/server/{{server._id}}"> {{server.name || server._id}}</a></td>
                 <td>{{server.url}}</td>
-                <td><button ng-click="_delete(server._id)">remover</button></td>
+                <td>
+                    <button class="btn btn-primary" ng-click="_delete(server._id)">remover</button>
+                    <button class="btn btn-primary" ng-click="_edit(server._id)">Editar</button>
+                </td>
             </tr>
 
         </tbody>

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('dashSupervisorFrontApp')
-  .controller('ServerCtrl', function ($scope, $rootScope, $http) {
+  .controller('ServerCtrl', function ($scope, $rootScope, $http, $location) {
     $rootScope.activate("Servidores");
 
     $http({method: "GET", url:"http://localhost:3000/server"}).
@@ -28,5 +28,10 @@ angular.module('dashSupervisorFrontApp')
               $scope.servers = $scope._remove_from_list($scope.servers, _id);
           }
       );
+    };
+
+    $scope._edit = function (_id){
+        console.log("_edit");
+        $location.path("/server/edit/"+_id);
     };
   });

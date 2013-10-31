@@ -15,6 +15,10 @@ angular.module('dashSupervisorFrontApp', [])
         templateUrl: 'views/serveredit.html',
         controller: 'ServeraddCtrl'
       })
+      .when('/server/edit/:id', {
+        templateUrl: 'views/serveredit.html',
+        controller: 'ServereditCtrl'
+      })
       .when('/server/:id', {
         templateUrl: 'views/server.html',
         controller: 'ServerCtrl'
