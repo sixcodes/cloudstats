@@ -1,6 +1,7 @@
 
 var mongoose = require('mongoose');
 var db = require('./database');
+var rpc = require('./rpc');
 var model_server = mongoose.model('server');
 var express = require('express')
   , routes = require('./routes')
@@ -34,7 +35,6 @@ app.get('/', routes.index);
 app.get('/users', user.list);
 
 app.post('/server', function(req, res){
-    console.log(req.body);
     var newServer = model_server({
         name: req.body.name,
         rpc_url: req.body.rpc_url,
@@ -64,7 +64,12 @@ app.get('/server', function(req, res){
 app.get('/server/:id', function(req, res){
     model_server.findOne({_id:req.params.id}, function(err, server){
         if(server){
-            res.send(server);
+            options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
+            var client = rpc._get_client(options);
+            client._call("getAllProcessInfo", function(data){
+                res.send(data);
+            });
+            console.log(rpc);
         }else{
             res.send('Ainda não há servidores cadastrados');
         }
@@ -111,7 +116,8 @@ server_io.sockets.on('status', function (socket) {
 app.post('/event', function(req, res){
     console.log(req.body);
     res.send("ACK");
-    server_io.sockets.emit("status_changed", {hostname: req.body.hostname,
+    server_io.sockets.emit("status_changed", {
+        hostname: req.body.hostname,
         process: req.body.processname,
         from_state: req.body.from_state,
         to_state: req.body.to_state
