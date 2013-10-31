@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('dashSupervisorFrontApp')
-  .controller('NavbarCtrl', function ($scope) {
+  .controller('NavbarCtrl', function ($scope, $rootScope) {
+   $rootScope._active = {};
 
    $scope._links =[
        {name: "Home", url: ""},
@@ -9,20 +10,18 @@ angular.module('dashSupervisorFrontApp')
        {name:"Settings", url: "settings"}
    ];
 
-   $scope._disactivate_all = function(){
-       $scope._active = {};
+   $rootScope._disactivate_all = function(){
+       $rootScope._active = {};
        $scope._links.forEach(function (key){
-           $scope._active[key] = "";
+           $rootScope._active[key] = "";
        });
    };
 
-   $scope.activate = function(name){
-       $scope._disactivate_all();
-       $scope._active[name] = "active";
+   $rootScope.activate = function(name){
+       $rootScope._disactivate_all();
+       $rootScope._active[name] = "active";
    };
 
-   $scope._active = {};
-   $scope._disactivate_all();
-   $scope.activate($scope._links[0]["name"]);
-
+   $rootScope._disactivate_all();
+   $rootScope.activate($scope._links[0]["name"]);
   });
