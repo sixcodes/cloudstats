@@ -1,13 +1,15 @@
 'use strict';
 
 angular.module('dashSupervisorFrontApp')
-  .controller('ServerCtrl', function ($scope, $rootScope) {
+  .controller('ServerCtrl', function ($scope, $rootScope, $http) {
     $rootScope.activate("Servidores");
 
-    $scope.servers = [
-        {name: "Updater"},
-        {name: "Updater2"},
-        {name: "Exportacao"}
-    ];
+    $http({method: "GET", url:"http://localhost:3000/server"}).
+        success(function (data, status){
+            $scope.servers = data;
+        }
+
+    );
+
 
   });

@@ -2,7 +2,10 @@
 <div class="span8">
     <ul>
         <li ng-repeat="server in servers">
-            {{server['name']}}
+            <a ng-href="#/server/{{server._id}}"> {{server.name}}</a>
         </li>
     </ul>
+
+    <a class="btn btn-primary" href="#/server/add"> Novo Servidor</a>
+
 </div>
