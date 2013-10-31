@@ -18,15 +18,22 @@ def main():
         sys.stderr.flush()
         sys.exit(1)
 
-    while 1:
+    if len(sys.argv) < 2:
+        sys.stderr.write("notify_plugin must receive the Dashboard URL")
+        sys.stderr.flush()
+        sys.exit(1)
 
+    dashboard_url = sys.argv[1]
+
+    while 1:
         headers, payload = childutils.listener.wait(sys.stdin, sys.stdout)
         pheaders, pdata = childutils.eventdata(payload+'\n')
         pheaders["hostname"] = socket.gethostname()  # Send hostname
-        #TODO: Send a POST to the Dashboard URL
-        # requests.post(DASHBOARD_URL, data=pdata)
+        pheaders["to_state"] = headers["eventname"].replace("PROCESS_STATE_", "")  # Send current state
+        if not "notify_plugin" in pheaders["processname"]:
+            requests.post(dashboard_url, data=pheaders)
+
         childutils.listener.ok(sys.stdout)
-        sys.stderr.flush()
 
 
 if __name__ == "__main__":
