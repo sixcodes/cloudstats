@@ -24,6 +24,10 @@ node_modules
 *.egg
 *.egg-info
 dist
+.tmp
+.sass-cache
+app/bower_components
+.idea/*
 build
 eggs
 parts
@@ -51,7 +55,4 @@ nosetests.xml
 
 # supervisord
 supervisord.conf
-.tmp
-.sass-cache
-app/bower_components
-.idea/*
+public/
