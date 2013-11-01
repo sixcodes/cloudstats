@@ -204,8 +204,8 @@ app.post('/event', function(req, res){
                         priority: 1 // optional
                     };
                     var p = new push( {
-                        user: app.get('PUSHOVER_USER'),
-                        token: app.get('PUSHOVER_TOKEN'),
+                        user: app.get('push_user'),
+                        token: app.get('push_token'),
                     });
                     p.send( msg, function( err, result ) {
                         if ( err ) {
