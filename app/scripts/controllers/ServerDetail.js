@@ -53,6 +53,7 @@ angular.module('dashSupervisorFrontApp')
 
       $scope._action_on_process = function(action, procname){
             console.log(action+" Process: "+procname);
+            $scope.closeAlert();
             $http({method: "POST",url:"/server/"+$scope._id+"/"+action, data: {process:procname}})
                 .success(function (data, status){
                     var new_info = data["process_info"];
@@ -76,8 +77,8 @@ angular.module('dashSupervisorFrontApp')
           $scope._action_on_process("start", procname);
       };
 
-    $scope.closeAlert = function(index) {
-        $scope.alerts.splice(index, 1);
+    $scope.closeAlert = function() {
+        $scope.alerts = [];
     };
 
   });

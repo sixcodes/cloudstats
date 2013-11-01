@@ -4,23 +4,6 @@ body {
     color: #333;
 }
 
-.hero-unit {
-    margin: 50px auto 0 auto;
-    width: 300px;
-    font-size: 18px;
-    font-weight: 200;
-    line-height: 30px;
-    background-color: #eee;
-    border-radius: 6px;
-    padding: 60px;
-}
-
-.hero-unit h1 {
-    font-size: 60px;
-    line-height: 1;
-    letter-spacing: -1px;
-}
-
 .loading {
     top:0;
     bottom:0;
@@ -40,4 +23,62 @@ body {
 	box-shadow: 0 1px 5px rgba(0,0,0,0.2);
 	-moz-box-shadow: 0 1px 5px rgba(0,0,0,0.2);
 	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+}
+
+.notification {
+    position: fixed;
+    z-index: 9999;
+    left: 200px;
+    right: 0;
+    top: -100px;
+    text-align: center;
+    height: 1px;
+}
+.notification-content {
+    background: #555;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 200px;
+    position: relative;
+    line-height: 47px;
+
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.notification-icon {
+    float: left;
+}
+
+.notification-message {
+    float: left;
+    padding: 0 40px 0 20px;
+}
+
+.notification.success .notification-content { background: rgb(113, 149, 214); }
+.notification.error .notification-content { background: #E2625C;  }
+.notification.warning .notification-content { background: #F3BA1C; }
+
+.notification-close {
+    background: rgba(0, 0, 0, 0.03);
+    display: block;
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    float: right;
+    padding: 0 16px;
+}
+.notification-close:hover { background: rgba(0, 0, 0, 0.07); }
+.notification-close:active {
+    background: rgba(0, 0, 0, 0.15);
+    color: #fff;
 }

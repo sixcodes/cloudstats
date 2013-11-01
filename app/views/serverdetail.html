@@ -1,11 +1,19 @@
+
 <div class="loading" ng-show="!process || action_running"></div>
 <div class="span2"></div>
 <div class="span10">
 
     <h1>Server Processes</h1>
-    <div ng-show="alerts.length > 0">
-      <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert}}</alert>
-    </div>
+        <div>
+            <div id="teste" class="feedback success notification" style="top: 60px;" ng-show="alerts.length > 0">
+                <div class="notification-content">
+                    <span class="notification-icon"></span>
+                    <span class="notification-message">{{alerts[0]}}</span>
+                    <a class="notification-close" ng-click="closeAlert(0)">×</a>
+                    <b class="clear"></b>
+                </div>
+            </div>
+        </div>
             <div ng-repeat="(groupname, process_list) in _by_groupname">
                 <div>
                     <a ng-click="_open_state[groupname] = !_open_state[groupname]">{{groupname}}</a>
