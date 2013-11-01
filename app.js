@@ -10,12 +10,7 @@ var express = require('express')
     , path = require('path');
 var io = require('socket.io');
 var app = express();
-var push = require('pushover-notifications' );
-
-var p = new push( {
-    user: process.env['PUSHOVER_USER'],
-    token: process.env['PUSHOVER_TOKEN'],
-});
+var push = require('pushover-notifications');
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -23,6 +18,8 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.set("smtp_user", process.env.SMTP_USER);
 app.set("smtp_pass", process.env.SMTP_PASS);
+app.set("push_user", process.env.PUSHOVER_USER || null);
+app.set("push_token", process.env.PUSHOVER_TOKEN || null);
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
@@ -199,20 +196,25 @@ app.post('/event', function(req, res){
                         if (err) { return console.error(err); }
                         console.log(json);
                     });
-                var msg = {
-                    message: 'Verifique em ' + server.rpc_url,
-                    title: "Serviço " + req.body.processname + ' parou',
-                    sound: 'magic', // optional
-                    priority: 1 // optional
-                };
+                if (app.get("push_user") != null && app.get("push_token" != null)){
+                    var msg = {
+                        message: 'Verifique em ' + server.rpc_url,
+                        title: "Serviço " + req.body.processname + ' parou',
+                        sound: 'magic', // optional
+                        priority: 1 // optional
+                    };
+                    var p = new push( {
+                        user: process.env['PUSHOVER_USER'],
+                        token: process.env['PUSHOVER_TOKEN'],
+                    });
+                    p.send( msg, function( err, result ) {
+                        if ( err ) {
+                            throw err;
+                        }
 
-                p.send( msg, function( err, result ) {
-                    if ( err ) {
-                        throw err;
-                    }
-
-                    console.log( result );
-                });
+                        console.log( result );
+                    });
+                }
             }
             else {
                 console.log("Servidor não encontrado");
