@@ -196,7 +196,7 @@ app.post('/event', function(req, res){
                         if (err) { return console.error(err); }
                         console.log(json);
                     });
-                if (app.get("push_user") != null && app.get("push_token" != null)){
+                if (app.get("push_user") != null && app.get("push_token") != null){
                     var msg = {
                         message: 'Verifique em ' + server.rpc_url,
                         title: "Serviço " + req.body.processname + ' parou',
