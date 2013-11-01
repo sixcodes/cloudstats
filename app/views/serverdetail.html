@@ -17,6 +17,10 @@
             <div ng-repeat="(groupname, process_list) in _by_groupname">
                 <div>
                     <a ng-click="_open_state[groupname] = !_open_state[groupname]">{{groupname}}</a>
+                    <span class="pull-right">
+                        <span class="label label-success">{{_process_count_by_group[groupname]["RUNNING"]}}</span>
+                        <span class="label label-important">{{_process_count_by_group[groupname]["STOPPED"]}}</span>
+                    </span>
                     <hr/>
                 </div>
                 <div ng-show="_open_state[groupname]">
@@ -31,7 +35,7 @@
 
                         <tbody>
 
-                            <tr ng-repeat="p in process_list" ng-class="">
+                            <tr ng-repeat="p in process_list">
                                 <td>{{p.group}}:{{p.name}}</td>
                                 <td>{{p.description}}, {{p.statename}}</td>
                                 <td>

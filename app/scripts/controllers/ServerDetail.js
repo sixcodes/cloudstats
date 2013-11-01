@@ -8,11 +8,34 @@ angular.module('dashSupervisorFrontApp')
       $scope.alert_type = "success";
       $scope._id = $routeParams.id;
       $scope._open_state = {};
+      $scope._process_count_by_group = {};
+
+
+      $scope._count_procs = function(list){
+          var _counts = {RUNNING:0, STOPPED:0};
+          list.forEach(function(obj){
+              if (obj.statename == "RUNNING"){
+                  _counts["RUNNING"]++;
+              }else if (obj.statename == "STOPPED"){
+                  _counts["STOPPED"]++;
+              }
+          });
+          return _counts;
+      };
+
+      $scope._update_process_counts = function(_by_groupname){
+        var _p_counts = {};
+        for (var k in _by_groupname){
+          _p_counts[k] = $scope._count_procs(_by_groupname[k]);
+        }
+        return _p_counts;
+      };
 
       $scope._refresh = function (){
           var future = $http({method: "GET",url:"/server/"+$scope._id+"/process"})
               .success(function (data, status){
                     $scope._by_groupname = $scope._divide_by_groupname(data);
+                    $scope._process_count_by_group = $scope._update_process_counts($scope._by_groupname);
                     $scope.process = data;
               })
               .error(function (data, status){
@@ -24,7 +47,6 @@ angular.module('dashSupervisorFrontApp')
       $scope._refresh();
 
       $scope._divide_by_groupname = function(process_list){
-        console.log(process_list);
         var _by_groupname = {};
         process_list.forEach(function (p){
             $scope._open_state[p.group] = false;
@@ -49,6 +71,7 @@ angular.module('dashSupervisorFrontApp')
                         $scope._by_groupname[groupname][index] = new_info;
                     }
                 });
+                $scope._process_count_by_group = $scope._update_process_counts($scope._by_groupname);
             }
           }
       };
