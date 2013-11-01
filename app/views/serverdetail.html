@@ -1,7 +1,7 @@
 <div class="span2"></div>
 <div class="span10">
 
-    <h1>Server Processes</h1>
+    <h1>Server Processes</h1> <div ng-show="!process">Aguarde...</div>
         <accordion close-others="false">
             <accordion-group ng-repeat="(groupname, process_list) in _by_groupname">
                 <accordion-heading>
