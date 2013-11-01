@@ -1,0 +1,31 @@
+<div class="span4"></div>
+<div class="span8">
+
+    <h1>Servidores</h1>
+    <table class="table table-condensed table-bordered">
+        <thead>
+            <tr>
+                <td>Nome</td>
+                <td>URL</td>
+                <td>Acao</td>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr ng-repeat="server in servers">
+                <td><a ng-href="#/server/{{server._id}}"> {{server.name || server._id}}</a></td>
+                <td>{{server.rpc_url}}</td>
+                <td>
+                    <button class="btn btn-primary" ng-click="_delete(server._id)">remover</button>
+                    <button class="btn btn-primary" ng-click="_edit(server._id)">Editar</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <a class="btn btn-primary" href="#/server/add"> Novo Servidor</a>
+
+</div>
