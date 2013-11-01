@@ -1,9 +1,8 @@
 'use strict';
 
 angular.module('dashSupervisorFrontApp')
-  .controller('ServerdetailCtrl', function ($scope, $http, $routeParams, $rootScope) {
+  .controller('ServerdetailCtrl', function ($scope, $http, $routeParams, $rootScope, Socket) {
       $rootScope.activate("Servidores");
-      $scope._io = io.connect("/event");
 
       $scope.alerts = [];
       $scope.alert_type = "success";
@@ -46,8 +45,12 @@ angular.module('dashSupervisorFrontApp')
       };
 
       $scope._refresh();
-      $scope._io.on("status_changed", function(data){
+      Socket.on("status_changed", function(data){
           console.log(data);
+          var procname = data["groupname"] + ":" + data["processname"];
+          var new_info = data["process_info"];
+          $scope._update_internal("", procname, new_info);
+          $scope.alerts.push("Mudança de estado:" + procname + " :" + data["to_state"]);
       });
 
       $scope._divide_by_groupname = function(process_list){
