@@ -10,6 +10,12 @@ var express = require('express')
     , path = require('path');
 var io = require('socket.io');
 var app = express();
+var push = require('pushover-notifications' );
+
+var p = new push( {
+    user: process.env['PUSHOVER_USER'],
+    token: process.env['PUSHOVER_TOKEN'],
+});
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -193,6 +199,20 @@ app.post('/event', function(req, res){
                         if (err) { return console.error(err); }
                         console.log(json);
                     });
+                var msg = {
+                    message: 'Verifique em ' + server.rpc_url,
+                    title: "Serviço " + req.body.processname + ' parou',
+                    sound: 'magic', // optional
+                    priority: 1 // optional
+                };
+
+                p.send( msg, function( err, result ) {
+                    if ( err ) {
+                        throw err;
+                    }
+
+                    console.log( result );
+                });
             }
             else {
                 console.log("Servidor não encontrado");
