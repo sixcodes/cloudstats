@@ -68,13 +68,23 @@ app.get('/server', function(req, res){
 app.get('/server/:id', function(req, res){
     model_server.findOne({_id:req.params.id}, function(err, server){
         if(server){
+            res.send(server);
+        }else{
+            res.status(404).send({data:'Servidor nao encontrado'});
+        }
+    })
+});
+
+app.get('/server/:id/process', function(req, res){
+    model_server.findOne({_id:req.params.id}, function(err, server){
+        if(server){
             options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
             var client = rpc._get_client(options);
             client._call("getAllProcessInfo", function(data){
                 res.send(data);
             });
         }else{
-            res.send('Ainda não há servidores cadastrados');
+            res.status(404).send({data:'Servidor nao encontrado'});
         }
     })
 });

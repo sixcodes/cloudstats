@@ -10,6 +10,9 @@ angular.module('dashSupervisorFrontApp')
               .success(function (data, status){
                     console.log(data);
                     $scope.server = data;
+              })
+              .error(function (data, status){
+                    console.log(data);
               });
 
     $scope.reset = function (){
