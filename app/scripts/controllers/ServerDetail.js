@@ -34,7 +34,7 @@ angular.module('dashSupervisorFrontApp')
         return _by_groupname;
       };
 
-      $scope._update_internal = function (action, procname){
+      $scope._update_internal = function (action, procname, new_info){
           var groupname = procname.split(":")[0];
           var name = procname.split(":")[1];
           console.log(groupname);
@@ -42,13 +42,9 @@ angular.module('dashSupervisorFrontApp')
           for (var key in $scope._by_groupname){
             if (key == groupname){
                 console.log($scope._by_groupname[groupname]);
-                $scope._by_groupname[groupname].forEach(function (o){
-                    if (o.name == name){
-                        if (action == "stop"){
-                            o.statename = "STOPPED";
-                        }else{
-                            o.statename = "RUNNING";
-                        }
+                $scope._by_groupname[groupname].forEach(function (obj, index){
+                    if (obj.name == name){
+                        $scope._by_groupname[groupname][index] = new_info;
                     }
                 });
             }
@@ -59,9 +55,10 @@ angular.module('dashSupervisorFrontApp')
             console.log(action+" Process: "+procname);
             $http({method: "POST",url:"/server/"+$scope._id+"/"+action, data: {process:procname}})
                 .success(function (data, status){
+                    var new_info = data["process_info"];
                     $scope.alerts.push(data['data'] + " " + procname);
                     $scope.action_running = false;
-                    $scope._update_internal(action, procname);
+                    $scope._update_internal(action, procname, new_info);
                 })
                 .error(function (data, status){
                     $scope.alerts.push(data['data'] + " " + procname);
