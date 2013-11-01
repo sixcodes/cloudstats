@@ -108,7 +108,7 @@ app.get('/server/:id/process', function(req, res){
                 if (data){
                     res.send(data);
                 }else{
-                    res.status(404).send({data: "Erro ao alterar estado do processo"});
+                    res.status(404).send({data: "Erro ao acessar lista de processos"});
                 }
             });
         }else{

@@ -5,6 +5,7 @@ angular.module('dashSupervisorFrontApp')
       $rootScope.activate("Servidores");
 
       $scope.alerts = [];
+      $scope.alert_type = "success";
       $scope._id = $routeParams.id;
       $scope._open_state = {};
 
@@ -16,6 +17,7 @@ angular.module('dashSupervisorFrontApp')
               })
               .error(function (data, status){
                   $scope.alerts.push(data['data']);
+                  $scope.alert_type = "error";
               });
       };
 
@@ -59,6 +61,7 @@ angular.module('dashSupervisorFrontApp')
                     var new_info = data["process_info"];
                     $scope.alerts.push(data['data'] + " " + procname);
                     $scope.action_running = false;
+                    $scope.alert_type = "success";
                     $scope._update_internal(action, procname, new_info);
                 })
                 .error(function (data, status){
