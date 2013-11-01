@@ -13,9 +13,6 @@
     "socket.io": "*",
     "sendgrid": "*"
   },
-  "name": "dash-supervisor-front",
-  "version": "0.0.0",
-  "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-copy": "~0.4.1",
