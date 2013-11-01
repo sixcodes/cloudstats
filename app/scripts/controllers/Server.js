@@ -5,7 +5,7 @@ angular.module('dashSupervisorFrontApp')
     $rootScope.activate("Servidores");
     $scope._by_id = {};
 
-    $http({method: "GET", url:"http://localhost:3000/server"}).
+    $http({method: "GET", url:"/server"}).
         success(function (data, status){
             $scope.servers = data;
             $scope.servers.forEach(function(s){
@@ -40,7 +40,7 @@ angular.module('dashSupervisorFrontApp')
        });
 
        modal.result.then(function () {
-            $http({method: "DELETE", url:"http://localhost:3000/server/"+_id}).
+            $http({method: "DELETE", url:"/server/"+_id}).
                 success(function (data, status){
                     $scope.servers = $scope._remove_from_list($scope.servers, _id);
                 }
@@ -56,7 +56,7 @@ angular.module('dashSupervisorFrontApp')
     };
 
     $scope.save = function(server){
-      $http({method: "POST",url:"http://localhost:3000/server", data: angular.toJson(server)})
+      $http({method: "POST",url:"/server", data: angular.toJson(server)})
           .success(function (data, status){
                 $scope.servers.push(server);
           })

@@ -10,7 +10,7 @@ angular.module('dashSupervisorFrontApp')
       };
 
       $scope.save = function(server){
-          $http({method: "POST",url:"http://localhost:3000/server", data: angular.toJson(server)})
+          $http({method: "POST",url:"/server", data: angular.toJson(server)})
               .success(function (data, status){
                     $scope.add_status = status;
                     $scope.add_data = data;

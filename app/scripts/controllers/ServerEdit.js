@@ -6,7 +6,7 @@ angular.module('dashSupervisorFrontApp')
     $scope.title = "Edit Server";
 
     $scope._id = $routeParams.id;
-    $http({method: "GET",url:"http://localhost:3000/server/"+$scope._id})
+    $http({method: "GET",url:"/server/"+$scope._id})
               .success(function (data, status){
                     console.log(data);
                     $scope.server = data;
@@ -22,7 +22,7 @@ angular.module('dashSupervisorFrontApp')
     $scope.save = function(server){
       console.log("save()");
       server._id = $scope._id;
-      $http({method: "PUT",url:"http://localhost:3000/server", data: angular.toJson(server)})
+      $http({method: "PUT",url:"/server", data: angular.toJson(server)})
           .success(function (data, status){
                 $scope.add_status = status;
                 $scope.add_data = data;
