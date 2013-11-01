@@ -12,7 +12,6 @@ popd > /dev/null
 
 pushd $PROJECT_DIR/public > /dev/null
 ln -sf ../app/* .
-ln -s images img
-ln -s ../app/bower_components/bootstrap-ui/template .
+ln -sf ../app/bower_components/bootstrap-ui/template .
 
 popd > /dev/null
