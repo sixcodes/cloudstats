@@ -41,9 +41,8 @@
                                 <td>
                                     <div class="btn-toolbar">
                                         <div class="btn-group">
-                                            <a class="btn btn-mini" ng-click="_start(p.group + ':' + p.name)" ng-href="" ng-show="p.statename == 'STOPPED'"><i class="icon-play"></i></a>
+                                            <a class="btn btn-mini" ng-click="_start(p.group + ':' + p.name)" ng-href="" ng-show="p.statename == 'STOPPED' || p.statename == 'FATAL'"><i class="icon-play"></i></a>
                                             <a class="btn btn-mini" ng-click="_stop(p.group + ':' + p.name)" ng-show="p.statename == 'RUNNING'"><i class="icon-stop"></i></a>
-                                            <a class="btn btn-mini" ><i class="icon-refresh"></i></a>
                                         </div>
                                     </div>
                                 </td>
