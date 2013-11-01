@@ -23,4 +23,26 @@ angular.module('dashSupervisorFrontApp')
         });
         return _by_groupname;
       };
+
+      $scope._action_on_process = function(action, procname){
+            console.log(action+" Process: "+procname);
+            $http({method: "POST",url:"/server/"+$scope._id+"/"+action, data: {process:procname}})
+                .success(function (data, status){
+                    console.log(data);
+                })
+                .error(function (data, status){
+                    console.log("erro");
+                    console.log(data);
+                    console.log(status);
+                });
+      };
+
+      $scope._stop = function(procname){
+          $scope._action_on_process("stop", procname);
+      };
+
+      $scope._start = function(procname){
+          $scope._action_on_process("start", procname);
+      };
+
   });
