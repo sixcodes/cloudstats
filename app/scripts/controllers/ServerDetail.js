@@ -4,10 +4,11 @@ angular.module('dashSupervisorFrontApp')
   .controller('ServerdetailCtrl', function ($scope, $http, $routeParams) {
       $scope.alerts = [];
       $scope._id = $routeParams.id;
+      $scope._open_state = {};
 
       $scope._refresh = function (){
           console.log("Refreshing process list...");
-          $http({method: "GET",url:"/server/"+$scope._id+"/process"})
+          var future = $http({method: "GET",url:"/server/"+$scope._id+"/process"})
               .success(function (data, status){
                     console.log(data);
                     $scope._by_groupname = $scope._divide_by_groupname(data);
@@ -19,6 +20,10 @@ angular.module('dashSupervisorFrontApp')
       };
 
       $scope._refresh();
+      /*$scope._by_groupname.forEach(function (item){
+          $scope._open_state[item] = false;
+        });
+        */
 
       $scope._divide_by_groupname = function(process_list){
         console.log(process_list);

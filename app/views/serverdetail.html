@@ -5,11 +5,12 @@
     <div ng-show="alerts.length > 0">
       <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert}}</alert>
     </div>
-        <accordion close-others="false">
-            <accordion-group ng-repeat="(groupname, process_list) in _by_groupname">
-                <accordion-heading>
-                    {{groupname}}
-                </accordion-heading>
+            <div ng-repeat="(groupname, process_list) in _by_groupname">
+                <div>
+                    <a ng-click="_open_state[groupname] = !_open_state[groupname]">{{groupname}}</a>
+                    <hr/>
+                </div>
+                <div ng-show="_open_state[groupname]">
                     <table class="table table-condensed">
                         <thead>
                             <tr>
@@ -36,6 +37,6 @@
                             </tr>
                         </tbody>
                     </table>
-            </accordion-group>
-        </accordion>
+                </div>
+            </div>
 </div>
