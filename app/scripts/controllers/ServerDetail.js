@@ -2,6 +2,7 @@
 
 angular.module('dashSupervisorFrontApp')
   .controller('ServerdetailCtrl', function ($scope, $http, $routeParams) {
+      $scope.alerts = [];
       $scope._id = $routeParams.id;
       $http({method: "GET",url:"/server/"+$scope._id+"/process"})
           .success(function (data, status){
@@ -10,6 +11,7 @@ angular.module('dashSupervisorFrontApp')
                 $scope.process = data;
           })
           .error(function (data, status){
+              $scope.alerts.push(data['data']);
           });
 
       $scope._divide_by_groupname = function(process_list){
@@ -28,12 +30,10 @@ angular.module('dashSupervisorFrontApp')
             console.log(action+" Process: "+procname);
             $http({method: "POST",url:"/server/"+$scope._id+"/"+action, data: {process:procname}})
                 .success(function (data, status){
-                    console.log(data);
+                    $scope.alerts.push(data['data'] + " " + procname);
                 })
                 .error(function (data, status){
-                    console.log("erro");
-                    console.log(data);
-                    console.log(status);
+                    $scope.alerts.push(data['data'] + " " + procname);
                 });
       };
 
@@ -44,5 +44,9 @@ angular.module('dashSupervisorFrontApp')
       $scope._start = function(procname){
           $scope._action_on_process("start", procname);
       };
+
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
+    };
 
   });

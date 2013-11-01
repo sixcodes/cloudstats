@@ -2,6 +2,9 @@
 <div class="span10">
 
     <h1>Server Processes</h1> <div ng-show="!process">Aguarde...</div>
+    <div ng-show="alerts.length > 0">
+      <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert}}</alert>
+    </div>
         <accordion close-others="false">
             <accordion-group ng-repeat="(groupname, process_list) in _by_groupname">
                 <accordion-heading>

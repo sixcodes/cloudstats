@@ -71,7 +71,11 @@ app.post('/server/:id/:action', function(req, res){
             var client = rpc._actionProcess(options, req.body.process);
             client._call( req.params.action + "Process", function(data){
                 console.log(data);
-                res.send(200, {action: req.params.action, status: "OK"});
+                if (data){
+                    res.send({data: "Sucesso"});
+                }else{
+                    res.status(404).send({data: "Erro alterando status de processo, por favor tente novamente"});
+                }
             });
         }else{
             res.send('Este servidor não existe, por favor verifique.');
@@ -96,7 +100,11 @@ app.get('/server/:id/process', function(req, res){
             options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
             var client = rpc._get_client(options);
             client._call("getAllProcessInfo", function(data){
-                res.send(data);
+                if (data){
+                    res.send(data);
+                }else{
+                    res.status(404).send({data: "Erro ao alterar estado do processo"});
+                }
             });
         }else{
             res.status(404).send({data:'Servidor nao encontrado'});
