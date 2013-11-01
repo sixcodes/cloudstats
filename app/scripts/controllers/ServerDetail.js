@@ -14,13 +14,13 @@ angular.module('dashSupervisorFrontApp')
 
       $scope._divide_by_groupname = function(process_list){
         console.log(process_list);
-        $scope._by_groupname = {};
+        var _by_groupname = {};
         process_list.forEach(function (p){
-            if (!$scope._by_groupname[p.group]){
-                $scope._by_groupname[p.group] = Array();
+            if (!_by_groupname[p.group]){
+                _by_groupname[p.group] = Array();
             }
-            $scope._by_groupname[p.group].push(p);
+            _by_groupname[p.group].push(p);
         });
-        console.log($scope._by_groupname);
+        return _by_groupname;
       };
   });
