@@ -19,9 +19,9 @@ angular.module('dashSupervisorFrontApp', ["ui.bootstrap"])
         templateUrl: 'views/serveredit.html',
         controller: 'ServereditCtrl'
       })
-      .when('/server/:id', {
-        templateUrl: 'views/server.html',
-        controller: 'ServerCtrl'
+      .when('/server/:id/process', {
+        templateUrl: 'views/serverdetail.html',
+        controller: 'ServerdetailCtrl'
       })
       .otherwise({
         redirectTo: '/'

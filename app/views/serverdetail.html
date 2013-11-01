@@ -1,0 +1,38 @@
+<div class="span2"></div>
+<div class="span10">
+
+    <h1>Server Processes</h1>
+        <accordion close-others="false">
+            <accordion-group ng-repeat="(groupname, process_list) in _by_groupname">
+                <accordion-heading>
+                    {{groupname}}
+                </accordion-heading>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <td>Nome</td>
+                                <td>Info</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr ng-repeat="p in process_list">
+                                <td>{{p.group}}:{{p.name}}</td>
+                                <td>{{p.description}}, {{p.statename}}</td>
+                                <td>
+                                    <div class="btn-toolbar">
+                                        <div class="btn-group">
+                                            <a class="btn btn-mini" ng-click="_start(p.group + ':' + p.name)" ng-href="" ng-show="p.statename == 'STOPPED'"><i class="icon-play"></i></a>
+                                            <a class="btn btn-mini" ng-click="_stop(p.group + ':' + p.name)" ng-show="p.statename == 'RUNNING'"><i class="icon-stop"></i></a>
+                                            <a class="btn btn-mini" ><i class="icon-refresh"></i></a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </accordion-group>
+        </accordion>
+</div>

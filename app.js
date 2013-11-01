@@ -64,6 +64,21 @@ app.get('/server', function(req, res){
     })
 });
 
+app.post('/server/:id/:action', function(req, res){
+    model_server.findOne({_id:req.params.id}, function(err, server){
+        if(server){
+            options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
+            var client = rpc._actionProcess(options, req.body.process);
+            client._call( req.params.action + "Process", function(data){
+                console.log(data);
+                res.send(200, {action: req.params.action, status: "OK"});
+            });
+        }else{
+            res.send('Este servidor não existe, por favor verifique.');
+        }
+    })
+});
+
 app.get('/server/:id', function(req, res){
     model_server.findOne({_id:req.params.id}, function(err, server){
         if(server){
@@ -77,6 +92,7 @@ app.get('/server/:id', function(req, res){
 app.get('/server/:id/process', function(req, res){
     model_server.findOne({_id:req.params.id}, function(err, server){
         if(server){
+            console.log("server encontrado, acessando xmlrpc");
             options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
             var client = rpc._get_client(options);
             client._call("getAllProcessInfo", function(data){
@@ -88,23 +104,6 @@ app.get('/server/:id/process', function(req, res){
     })
 });
 
-app.post('/server/:id/:action', function(req, res){
-    model_server.findOne({_id:req.params.id}, function(err, server){
-        if(server){
-            options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
-            var client = rpc._actionProcess(options, req.body.process);
-            client._call( req.params.action + "Process", function(data){
-                if(data){
-                    res.writeHead(200, {'Content-Type': 'text/plain'});
-                }else{
-                    res.writeHead(500, {'Content-Type': 'text/plain'});
-                }
-            });
-        }else{
-            res.send('Este servidor não existe, por favor verifique.');
-        }
-    })
-});
 
 app.put('/server', function(req, res){
     model_server.findOne({_id: req.body._id}, function(err, server){
