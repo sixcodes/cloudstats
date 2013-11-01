@@ -6,8 +6,7 @@ angular.module('dashSupervisorFrontApp')
 
    $scope._links =[
        {name: "Home", url: ""},
-       {name: "Servidores", url: "server"},
-       {name:"Settings", url: "settings"}
+       {name: "Servidores", url: "server"}
    ];
 
    $rootScope._disactivate_all = function(){
