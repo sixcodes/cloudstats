@@ -4,15 +4,21 @@ angular.module('dashSupervisorFrontApp')
   .controller('ServerdetailCtrl', function ($scope, $http, $routeParams) {
       $scope.alerts = [];
       $scope._id = $routeParams.id;
-      $http({method: "GET",url:"/server/"+$scope._id+"/process"})
-          .success(function (data, status){
-                console.log(data);
-                $scope._by_groupname = $scope._divide_by_groupname(data);
-                $scope.process = data;
-          })
-          .error(function (data, status){
-              $scope.alerts.push(data['data']);
-          });
+
+      $scope._refresh = function (){
+          console.log("Refreshing process list...");
+          $http({method: "GET",url:"/server/"+$scope._id+"/process"})
+              .success(function (data, status){
+                    console.log(data);
+                    $scope._by_groupname = $scope._divide_by_groupname(data);
+                    $scope.process = data;
+              })
+              .error(function (data, status){
+                  $scope.alerts.push(data['data']);
+              });
+      };
+
+      $scope._refresh();
 
       $scope._divide_by_groupname = function(process_list){
         console.log(process_list);
@@ -30,6 +36,8 @@ angular.module('dashSupervisorFrontApp')
             console.log(action+" Process: "+procname);
             $http({method: "POST",url:"/server/"+$scope._id+"/"+action, data: {process:procname}})
                 .success(function (data, status){
+                    console.log(data);
+                    $scope._refresh();
                     $scope.alerts.push(data['data'] + " " + procname);
                 })
                 .error(function (data, status){
