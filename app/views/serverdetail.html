@@ -1,12 +1,25 @@
+
+<div class="loading" ng-show="!process || action_running"></div>
 <div class="span2"></div>
 <div class="span10">
 
-    <h1>Server Processes</h1> <div ng-show="!process">Aguarde...</div>
-        <accordion close-others="false">
-            <accordion-group ng-repeat="(groupname, process_list) in _by_groupname">
-                <accordion-heading>
-                    {{groupname}}
-                </accordion-heading>
+    <h1>Server Processes</h1>
+        <div>
+            <div id="teste" class="feedback success notification" style="top: 60px;" ng-show="alerts.length > 0">
+                <div class="notification-content">
+                    <span class="notification-icon"></span>
+                    <span class="notification-message">{{alerts[0]}}</span>
+                    <a class="notification-close" ng-click="closeAlert(0)">×</a>
+                    <b class="clear"></b>
+                </div>
+            </div>
+        </div>
+            <div ng-repeat="(groupname, process_list) in _by_groupname">
+                <div>
+                    <a ng-click="_open_state[groupname] = !_open_state[groupname]">{{groupname}}</a>
+                    <hr/>
+                </div>
+                <div ng-show="_open_state[groupname]">
                     <table class="table table-condensed">
                         <thead>
                             <tr>
@@ -33,6 +46,6 @@
                             </tr>
                         </tbody>
                     </table>
-            </accordion-group>
-        </accordion>
+                </div>
+            </div>
 </div>
