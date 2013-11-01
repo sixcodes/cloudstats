@@ -10,7 +10,8 @@
     "jade": "*",
     "mongoose": "*",
     "xmlrpc": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+    "sendgrid": "*"
   },
   "name": "dash-supervisor-front",
   "version": "0.0.0",
