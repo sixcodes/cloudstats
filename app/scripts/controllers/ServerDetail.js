@@ -1,9 +1,8 @@
 'use strict';
 
 angular.module('dashSupervisorFrontApp')
-  .controller('ServerdetailCtrl', function ($scope, $http, $routeParams, $rootScope) {
+  .controller('ServerdetailCtrl', function ($scope, $http, $routeParams, $rootScope, Socket) {
       $rootScope.activate("Servidores");
-      $scope._io = io.connect("/event");
 
       $scope.alerts = [];
       $scope.alert_type = "success";
@@ -46,7 +45,7 @@ angular.module('dashSupervisorFrontApp')
       };
 
       $scope._refresh();
-      $scope._io.on("status_changed", function(data){
+      Socket.on("status_changed", function(data){
           console.log(data);
       });
 
