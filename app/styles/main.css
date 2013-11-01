@@ -4,10 +4,6 @@ body {
     color: #333;
 }
 
-.pointer{
-    cursor: pointer;
-}
-
 .loading {
     top:0;
     bottom:0;

@@ -16,7 +16,7 @@
         </div>
             <div ng-repeat="(groupname, process_list) in _by_groupname">
                 <div>
-                    <a class="pointer" ng-click="_open_state[groupname] = !_open_state[groupname]">{{groupname}}</a>
+                    <a ng-click="_open_state[groupname] = !_open_state[groupname]">{{groupname}}</a>
                     <hr/>
                 </div>
                 <div ng-show="_open_state[groupname]">
