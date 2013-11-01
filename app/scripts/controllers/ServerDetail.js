@@ -47,6 +47,10 @@ angular.module('dashSupervisorFrontApp')
       $scope._refresh();
       Socket.on("status_changed", function(data){
           console.log(data);
+          var procname = data["groupname"] + ":" + data["processname"];
+          var new_info = data["process_info"];
+          $scope._update_internal("", procname, new_info);
+          $scope.alerts.push("Mudança de estado:" + procname + " :" + data["to_state"]);
       });
 
       $scope._divide_by_groupname = function(process_list){
