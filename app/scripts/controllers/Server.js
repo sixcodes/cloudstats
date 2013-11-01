@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('dashSupervisorFrontApp')
-  .controller('ServerCtrl', function ($scope, $rootScope, $http, $location, $routeParams) {
+  .controller('ServerCtrl', function ($scope, $rootScope, $http, $location, $routeParams, $modal) {
     $rootScope.activate("Servidores");
     var id = $routeParams.id;
     $http({method: "GET", url:"http://localhost:3000/server/" + id}).
@@ -27,12 +27,30 @@ angular.module('dashSupervisorFrontApp')
         return new_list;
     };
 
+     $scope._modal_ok = function(){
+         $scope._modal_result= true;
+     };
+
+     $scope._modal_cancel = function(){
+         $scope._modal_result= false;
+     };
+
     $scope._delete = function(_id){
-      $http({method: "DELETE", url:"http://localhost:3000/server/"+_id}).
-          success(function (data, status){
-              $scope.servers = $scope._remove_from_list($scope.servers, _id);
-          }
-      );
+       var modal = $modal.open({
+           templateUrl: "views/modal/delete.html",
+           scope: $scope
+       });
+
+       modal.result.then(function () {
+            $http({method: "DELETE", url:"http://localhost:3000/server/"+_id}).
+                success(function (data, status){
+                    $scope.servers = $scope._remove_from_list($scope.servers, _id);
+                }
+            );
+        }, function () {
+          console.log('Modal dismissed at: ' + new Date());
+       });
+
     };
 
     $scope._edit = function (_id){

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('dashSupervisorFrontApp', [])
+angular.module('dashSupervisorFrontApp', ["ui.bootstrap"])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
