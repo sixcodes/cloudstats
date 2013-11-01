@@ -3,18 +3,15 @@
 angular.module('dashSupervisorFrontApp')
   .controller('ServerCtrl', function ($scope, $rootScope, $http, $location, $routeParams, $modal) {
     $rootScope.activate("Servidores");
-    var id = $routeParams.id;
-    $http({method: "GET", url:"http://localhost:3000/server/" + id}).
-        success(function (data, status){
-            $scope.process = data;
-        }
+    $scope._by_id = {};
 
-    );
     $http({method: "GET", url:"http://localhost:3000/server"}).
         success(function (data, status){
             $scope.servers = data;
+            $scope.servers.forEach(function(s){
+                $scope._by_id[s._id] = s;
+            });
         }
-
     );
 
     $scope._remove_from_list = function(list, _id){
@@ -36,6 +33,7 @@ angular.module('dashSupervisorFrontApp')
      };
 
     $scope._delete = function(_id){
+       $scope._id = _id;
        var modal = $modal.open({
            templateUrl: "views/modal/delete.html",
            scope: $scope
