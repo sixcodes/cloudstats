@@ -8,7 +8,6 @@ exports._get_client = function(options){
             rpc_client.methodCall('supervisor.' + method, [], function(err, value){
                 cb(value);
             });
-
         }
     }
 };
