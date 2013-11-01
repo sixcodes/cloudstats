@@ -67,16 +67,15 @@ app.get('/server', function(req, res){
 app.post('/server/:id/:action', function(req, res){
     model_server.findOne({_id:req.params.id}, function(err, server){
         if(server){
-            var processInfo = {};
+            processInfo = {};
             var options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
             var client = rpc._actionProcess(options, req.body.process);
             client._call( req.params.action + "Process", function(data){
                 client._call("getProcessInfo", function(process_info){
-                    console.log(process_info);
-                    processInfo['data'] = {data: "teste"};
+                    //processInfo["data"] = "teste";
                 });
                 if (data && processInfo){
-                    console.log(processInfo);
+                    console.log("processInfo="+processInfo["data"]);
                     res.send({data: "Sucesso", process_info: processInfo});
                 }else{
                     res.status(404).send({data: "Erro alterando status de processo, por favor tente novamente"});

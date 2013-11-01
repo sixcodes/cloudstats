@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('dashSupervisorFrontApp')
-  .controller('ServerdetailCtrl', function ($scope, $http, $routeParams) {
+  .controller('ServerdetailCtrl', function ($scope, $http, $routeParams, $rootScope) {
+      $rootScope.activate("Servidores");
+
       $scope.alerts = [];
       $scope._id = $routeParams.id;
       $scope._open_state = {};
@@ -20,15 +22,12 @@ angular.module('dashSupervisorFrontApp')
       };
 
       $scope._refresh();
-      /*$scope._by_groupname.forEach(function (item){
-          $scope._open_state[item] = false;
-        });
-        */
 
       $scope._divide_by_groupname = function(process_list){
         console.log(process_list);
         var _by_groupname = {};
         process_list.forEach(function (p){
+            $scope._open_state[p.group] = false;
             if (!_by_groupname[p.group]){
                 _by_groupname[p.group] = Array();
             }
@@ -37,12 +36,13 @@ angular.module('dashSupervisorFrontApp')
         return _by_groupname;
       };
 
+      $scope._update_internal = function (){};
+
       $scope._action_on_process = function(action, procname){
             console.log(action+" Process: "+procname);
             $http({method: "POST",url:"/server/"+$scope._id+"/"+action, data: {process:procname}})
                 .success(function (data, status){
                     console.log(data);
-                    $scope._refresh();
                     $scope.alerts.push(data['data'] + " " + procname);
                     $scope.action_running = false;
                 })
