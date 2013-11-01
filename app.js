@@ -158,13 +158,26 @@ server_io.sockets.on('status', function (socket) {
 app.post('/event', function(req, res){
     console.log(req.body);
     res.send("ACK");
-    console.log("Emitindo evento status_changed");
-    server_io.sockets.emit("status_changed", {
-        hostname: req.body.hostname,
-        process: req.body.processname,
-        from_state: req.body.from_state,
-        to_state: req.body.to_state
+    process_info = {};
+    model_server.findOne({name: req.body.hostname}, function(err, server){
+        if (server){
+            var options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
+            var client = rpc._actionProcess(options, req.body.groupname + ":" + req.body.processname);
+            client._call("getProcessInfo", function(_info){
+                server_io.sockets.emit("status_changed", {
+                    hostname: req.body.hostname,
+                    processname: req.body.processname,
+                    groupname: req.body.groupname,
+                    from_state: req.body.from_state,
+                    to_state: req.body.to_state,
+                    process_info: _info
+                });
+            });
+        }
     });
+
+
+
     if (req.body.from_state == "RUNNING" && (req.body.to_state == "STOPPING" || req.body.to_state == "STOPPED" || req.body.to_state == "EXITED")) {
         model_server.findOne({name: req.body.hostname}, function(err, server){
             if (server){
