@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema
     ,ObjectId = Schema.ObjectId;
-var db_url = "mongodb://localhost:27017/cloudstats",
-    db = mongoose.connect(db_url);
+var uristring = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || "mongodb://localhost:27017/cloudstats";
+db = mongoose.connect(uristring);
 var serverSchema = new Schema({
     id: ObjectId,
     name: String,
