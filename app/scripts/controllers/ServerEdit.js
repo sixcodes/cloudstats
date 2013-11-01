@@ -8,6 +8,7 @@ angular.module('dashSupervisorFrontApp')
     $scope._id = $routeParams.id;
     $http({method: "GET",url:"http://localhost:3000/server/"+$scope._id})
               .success(function (data, status){
+                    console.log(data);
                     $scope.server = data;
               });
 
