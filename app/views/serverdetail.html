@@ -1,0 +1,33 @@
+<div class="span2"></div>
+<div class="span10">
+
+    <h1>Server Processes</h1>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <td>Nome</td>
+                <td>URL</td>
+                <td></td>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr ng-repeat="p in process">
+                <td>{{p.group}}:{{p.name}}</td>
+                <td>{{p.description}}</td>
+                <td>
+                    <div class="btn-toolbar">
+                        <div class="btn-group">
+                            <a class="btn btn-mini" ng-href=""><i class="icon-play"></i></a>
+                            <a class="btn btn-mini" ng-href=""><i class="icon-stop"></i></a>
+                            <a class="btn btn-mini" ng-click=""><i class="icon-refresh"></i></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+</div>

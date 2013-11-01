@@ -15,7 +15,7 @@
         <tbody>
 
             <tr ng-repeat="server in servers">
-                <td><a ng-href="#/server/{{server._id}}"> {{server.name || server._id}}</a></td>
+                <td><a ng-href="#/server/{{server._id}}/process"> {{server.name || server._id}}</a></td>
                 <td>{{server.rpc_url}}</td>
                 <td>{{server.admin_email}}</td>
                 <td>

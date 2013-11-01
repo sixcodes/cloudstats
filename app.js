@@ -77,6 +77,7 @@ app.get('/server/:id', function(req, res){
 app.get('/server/:id/process', function(req, res){
     model_server.findOne({_id:req.params.id}, function(err, server){
         if(server){
+            console.log("server encontrado, acessando xmlrpc");
             options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
             var client = rpc._get_client(options);
             client._call("getAllProcessInfo", function(data){
