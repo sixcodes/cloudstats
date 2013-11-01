@@ -6,8 +6,8 @@ to the dashboard server
 import os
 import socket
 import sys
-
-import requests
+import urllib
+import urllib2
 
 from supervisor import childutils
 
@@ -31,7 +31,7 @@ def main():
         pheaders["hostname"] = socket.gethostname()  # Send hostname
         pheaders["to_state"] = headers["eventname"].replace("PROCESS_STATE_", "")  # Send current state
         if not "notify_plugin" in pheaders["processname"]:
-            requests.post(dashboard_url, data=pheaders)
+            urllib2.urlopen(dashboard_url, data=urllib.urlencode(pheaders))
 
         childutils.listener.ok(sys.stdout)
 
