@@ -15,4 +15,13 @@ $ grunt build
 
 Agora todas as referências que o app/index.html faz estarão resolvidas
 
+Preparando os staticos
+======================
+
+Entre em public/ e rode
+
+$ ln -s ../app/* .
+
+Agora o nodejs ja servira os estaticos da app frontend
+
 
