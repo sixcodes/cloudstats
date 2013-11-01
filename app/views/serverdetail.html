@@ -1,7 +1,7 @@
 <div class="span2"></div>
 <div class="span10">
 
-    <h1>Server Processes</h1> <div ng-show="!process">Aguarde...</div>
+    <h1>Server Processes</h1> <div ng-show="!process || action_running">Aguarde...</div>
     <div ng-show="alerts.length > 0">
       <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert}}</alert>
     </div>

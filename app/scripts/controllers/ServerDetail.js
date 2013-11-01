@@ -39,17 +39,21 @@ angular.module('dashSupervisorFrontApp')
                     console.log(data);
                     $scope._refresh();
                     $scope.alerts.push(data['data'] + " " + procname);
+                    $scope.action_running = false;
                 })
                 .error(function (data, status){
                     $scope.alerts.push(data['data'] + " " + procname);
+                    $scope.action_running = false;
                 });
       };
 
       $scope._stop = function(procname){
+          $scope.action_running = true;
           $scope._action_on_process("stop", procname);
       };
 
       $scope._start = function(procname){
+          $scope.action_running = true;
           $scope._action_on_process("start", procname);
       };
 
