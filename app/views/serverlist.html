@@ -21,8 +21,8 @@
                 <td>
                     <div class="btn-toolbar">
                         <div class="btn-group">
-                            <button class="btn" ng-click="_delete(server._id)"><i class="icon-trash"></i></button>
-                            <button class="btn" ng-click="_edit(server._id)"><i class="icon-edit"></i></button>
+                            <a class="btn" ng-click="_delete(server._id)"><i class="icon-trash"></i></a>
+                            <a class="btn" ng-href="#/server/edit/{{server._id}}"><i class="icon-edit"></i></a>
                         </div>
                     </div>
                 </td>
@@ -32,6 +32,6 @@
 
     </table>
 
-    <a class="btn btn-primary" href="#/server/add"> Novo Servidor</a>
+    <a class="btn btn-primary" ng-href="#/server/add"> Novo Servidor</a>
 
 </div>

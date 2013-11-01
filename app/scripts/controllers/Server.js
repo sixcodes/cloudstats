@@ -51,7 +51,27 @@ angular.module('dashSupervisorFrontApp')
 
     };
 
-    $scope._edit = function (_id){
-        $location.path("/server/edit/"+_id);
+    $scope.reset = function (){
+      $scope.server = {};
     };
+
+    $scope.save = function(server){
+      $http({method: "POST",url:"http://localhost:3000/server", data: angular.toJson(server)})
+          .success(function (data, status){
+                $scope.servers.push(server);
+          })
+          .error(function (data, status){
+                $scope.add_status = status;
+                $scope.add_data = data;
+          });
+    };
+
+    $scope.add_here = function (){
+       $scope.title = "Create Server";
+       var modal = $modal.open({
+           templateUrl: "views/serveredit.html",
+           scope: $scope
+       });
+    };
+
   });
