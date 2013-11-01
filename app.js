@@ -181,7 +181,7 @@ app.post('/event', function(req, res){
 
 
 
-    if (req.body.from_state == "RUNNING" && (req.body.to_state == "STOPPING" || req.body.to_state == "STOPPED" || req.body.to_state == "EXITED")) {
+    if (req.body.from_state == "RUNNING" && (req.body.to_state == "STOPPING" || req.body.to_state == "STOPPED" || req.body.to_state == "EXITED" || req.body.to_state == "FATAL")) {
         model_server.findOne({name: req.body.hostname}, function(err, server){
             if (server){
                 var email = new Email({

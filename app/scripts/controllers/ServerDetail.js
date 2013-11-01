@@ -16,7 +16,7 @@ angular.module('dashSupervisorFrontApp')
           list.forEach(function(obj){
               if (obj.statename == "RUNNING"){
                   _counts["RUNNING"]++;
-              }else if (obj.statename == "STOPPED"){
+              }else if (obj.statename == "STOPPED" || obj.statename == "FATAL"){
                   _counts["STOPPED"]++;
               }
           });
