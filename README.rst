@@ -1,27 +1,9 @@
-Build
+Build e arquivos estáticos
 =====
 
-Na raiz do projeto:
+Execute o script build.sh
 
-$ npm install
-$ bower install
+Rodando a aplicação
+=====
 
-depois entra em
-
-app/bower_components/boostrap-ui e roda
-
-$ npm install
-$ grunt build
-
-Agora todas as referências que o app/index.html faz estarão resolvidas
-
-Preparando os staticos
-======================
-
-Entre em public/ e rode
-
-$ ln -s ../app/* .
-
-Agora o nodejs ja servira os estaticos da app frontend
-
-
+Execute o script run.sh
