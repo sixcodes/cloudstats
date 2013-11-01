@@ -75,7 +75,6 @@ app.post('/server/:id/:action', function(req, res){
                     processInfo = process_info;
 
                     if (data && processInfo){
-                        console.log("processInfo="+processInfo);
                         res.send({data: "Sucesso", process_info: processInfo});
                     }else{
                         res.status(404).send({data: "Erro alterando status de processo, por favor tente novamente"});
@@ -159,6 +158,7 @@ server_io.sockets.on('status', function (socket) {
 app.post('/event', function(req, res){
     console.log(req.body);
     res.send("ACK");
+    console.log("Emitindo evento status_changed");
     server_io.sockets.emit("status_changed", {
         hostname: req.body.hostname,
         process: req.body.processname,

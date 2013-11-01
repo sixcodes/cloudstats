@@ -3,6 +3,7 @@
 angular.module('dashSupervisorFrontApp')
   .controller('ServerdetailCtrl', function ($scope, $http, $routeParams, $rootScope) {
       $rootScope.activate("Servidores");
+      $scope._io = io.connect("/event");
 
       $scope.alerts = [];
       $scope.alert_type = "success";
@@ -45,6 +46,9 @@ angular.module('dashSupervisorFrontApp')
       };
 
       $scope._refresh();
+      $scope._io.on("status_changed", function(data){
+          console.log(data);
+      });
 
       $scope._divide_by_groupname = function(process_list){
         var _by_groupname = {};
@@ -61,11 +65,8 @@ angular.module('dashSupervisorFrontApp')
       $scope._update_internal = function (action, procname, new_info){
           var groupname = procname.split(":")[0];
           var name = procname.split(":")[1];
-          console.log(groupname);
-          console.log($scope._by_groupname);
           for (var key in $scope._by_groupname){
             if (key == groupname){
-                console.log($scope._by_groupname[groupname]);
                 $scope._by_groupname[groupname].forEach(function (obj, index){
                     if (obj.name == name){
                         $scope._by_groupname[groupname][index] = new_info;
@@ -77,7 +78,6 @@ angular.module('dashSupervisorFrontApp')
       };
 
       $scope._action_on_process = function(action, procname){
-            console.log(action+" Process: "+procname);
             $scope.closeAlert();
             $http({method: "POST",url:"/server/"+$scope._id+"/"+action, data: {process:procname}})
                 .success(function (data, status){
