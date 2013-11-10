@@ -1,7 +1,16 @@
-/**
- * Created with JetBrains WebStorm.
- * User: jesuejunior
- * Date: 11/10/13
- * Time: 12:14 AM
- * To change this template use File | Settings | File Templates.
- */
+module.exports = function(app){
+    var Schema = require('mongoose').Schema
+        ,ObjectId = Schema.ObjectId;
+
+
+    var modelServer = new Schema({
+        id: ObjectId,
+        name: String,
+        rpc_url: {type: String, required: true},
+        rpc_user: String,
+        rpc_pass: String,
+        obs: String,
+        admin_email: String
+    });
+    return db.model('servers', modelServer)
+};
