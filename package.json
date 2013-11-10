@@ -12,9 +12,13 @@
     "xmlrpc": "*",
     "socket.io": "*",
     "pushover-notifications": "*",
-    "sendgrid": "*"
+    "sendgrid": "*",
+    "express-load": "*"
   },
   "devDependencies": {
+    "mocha": "*",
+    "supertest": "*",
+    "should": "*",
     "grunt": "~0.4.1",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
