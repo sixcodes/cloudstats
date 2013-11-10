@@ -1,6 +1,7 @@
 module.exports = function(app){
     var Schema = require('mongoose').Schema
         ,ObjectId = Schema.ObjectId;
+    var db = require('../middleware/db_connect')();
 
 
     var modelServer = new Schema({

@@ -11,9 +11,7 @@ var io = require('socket.io');
 var app = express();
 var push = require('pushover-notifications');
 
-//Conexao com o banco
-var uristring = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || "mongodb://localhost:27017/cloudstats";
-global.db = mongoose.connect(uristring);
+
 
 // all environments
 app.set('port', process.env.PORT || 3000);
