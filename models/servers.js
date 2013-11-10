@@ -7,7 +7,7 @@ module.exports = function(app){
     var modelServer = new Schema({
         id: ObjectId,
         name: String,
-        rpc_url: {type: String, required: true},
+        rpc_url: {type: String, required: true, index: {unique: true}},
         rpc_user: String,
         rpc_pass: String,
         obs: String,
