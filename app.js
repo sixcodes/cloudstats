@@ -1,4 +1,3 @@
-
 var mongoose = require('mongoose');
 var db = require('./database');
 var rpc = require('./rpc');
@@ -149,7 +148,7 @@ app.delete('/server/:id', function(req, res){
 });
 
 var server = http.createServer(app);
-server.listen(app.get('port'), function(){
+server.listen(app.get('port'), process.env.IP || 'localhost', function(){
     console.log('Express server listening on port ' + app.get('port'));
 });
 
