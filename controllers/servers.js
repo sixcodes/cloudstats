@@ -64,7 +64,7 @@ module.exports = function(app){
         getProcessById: function(req, res){
             modelServer.findOne({_id:req.params.id}, function(err, server){
                 if(server){
-                    console.log("server encontrado, acessando xmlrpc");
+                    console.log("Server found, accessing xmlrpc");
                     options = {"url": server.rpc_url, "basic_auth": {"user": server.rpc_user, "pass": server.rpc_pass } };
                     var client = rpc._get_client(options);
                     client._call("getAllProcessInfo", function(data){
