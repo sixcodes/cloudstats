@@ -1,7 +1,3 @@
-//console.log(json);
-
-// development only
-var mongoose = require('mongoose');
 
 var express = require('express')
     , load = require('express-load')
@@ -10,7 +6,6 @@ var express = require('express')
 var io = require('socket.io');
 var app = express();
 var push = require('pushover-notifications');
-
 
 
 // all environments
