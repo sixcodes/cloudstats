@@ -3,14 +3,6 @@ var app = require('../app'),
     request = require('supertest')(app);
 var modelServer = app.models.servers;
 
-//    afterEach(function(done){
-//        modelServer.find({}, function(err, data){
-//            data.forEach(function(item){
-//                item.remove();
-//            })
-//        });
-//        done();
-//    });
 
 describe("Test return params GET", function(){
 
@@ -75,40 +67,43 @@ describe("Test return params GET", function(){
     });
 });
 
-describe("Test POST to create a new server", function(done){
+describe("Test POST to create a new server", function(){
+    describe("Save server", function(){
+        var serverIt = {
+            "name": "testes_new",
+            "rpc_url": "updater_new.domain.com.br:9000",
+            "rpc_user": "ghost",
+            "rpc_pass": "12345",
+            "obs": "rá",
+            "admin_email": 'admin2@cloudstats.com'
+        };
 
-    var serverIt = {
-        "name": "testes_new",
-        "rpc_url": "updater_new.domain.com.br:9000",
-        "rpc_user": "ghost",
-        "rpc_pass": "12345",
-        "obs": "rá",
-        "admin_email": 'admin2@cloudstats.com'
-    };
-
-    it("Create new", function(done){
-        request.post('/server').send(serverIt).end(function(err, res){
-            assert.equal(res.status, 200);
+        it("Create new", function(){
+            request.post('/server').send(serverIt).end(function(err, res){
+                assert.equal(res.status, 200);
+            });
         });
-        done();
     });
 
-    it("Checking new server", function(done){
-        modelServer.findOne({"name":"testes_new"}, function(err, data){
-            assert.equal(data.name, "testes_new");
-            assert.equal(data.rpc_url, "updater_new.domain.com.br:9000");
-            assert.equal(data.rpc_user, "ghost");
-            assert.equal(data.rpc_pass, "12345");
-            assert.equal(data.obs, "rá");
-            assert.equal(data.admin_email, "admin2@cloudstats.com");
+    describe("Checking create server", function(){
+        it("Checking new server", function(){
+            modelServer.findOne({"name":"testes_new"}, function(err, data){
+                assert.equal(data.name, "testes_new");
+                assert.equal(data.rpc_url, "updater_new.domain.com.br:9000");
+                assert.equal(data.rpc_user, "ghost");
+                assert.equal(data.rpc_pass, "12345");
+                assert.equal(data.obs, "rá");
+                assert.equal(data.admin_email, "admin2@cloudstats.com");
+            });
         });
-        done();
-    })
+    });
+
+
 });
 
 describe("Test update server PUT", function(done){
 
-    beforeEach(function(done){
+    before(function(done){
         var server1 = {
             "_id": '52865e05ae84f66fee000003',
             "name": "server1",
@@ -123,7 +118,6 @@ describe("Test update server PUT", function(done){
         newServer.save();
         done();
     });
-
     it("Update server1", function(done){
         var serverNew = {
             "_id": '52865e05ae84f66fee000003',
@@ -140,16 +134,17 @@ describe("Test update server PUT", function(done){
         });
 
         modelServer.findOne({"_id":"52865e05ae84f66fee000003"}, function(err, data){
-            assert(data.name, 'server123');
+            assert(data.name, 'serverz123');
             assert(data.rpc_url, 'updater3.domain.com.br:9000');
             assert(data.rpc_user, 'ghosts');
             assert(data.rpc_pass, '123456');
             assert(data.obs, 'rá');
             assert(data.admin_email, 'admin@cloudstats.com');
+            done();
         });
 
-         done();
-    })
+
+    });
 });
 
 //describe("", function(done){
