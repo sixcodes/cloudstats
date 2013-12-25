@@ -3,6 +3,15 @@ var app = require('../app'),
     request = require('supertest')(app);
 var modelServer = app.models.servers;
 
+before(function(){
+    modelServer.find({}, function(err, data){
+        data.forEach(function(item){
+            item.remove();
+        });
+    });
+});
+
+
 
 describe("Test return params GET", function(){
 
@@ -68,7 +77,7 @@ describe("Test return params GET", function(){
 });
 
 describe("Test POST to create a new server", function(){
-    describe("Save server", function(){
+    describe("New server", function(){
         var serverIt = {
             "name": "testes_new",
             "rpc_url": "updater_new.domain.com.br:9000",
@@ -97,13 +106,11 @@ describe("Test POST to create a new server", function(){
             });
         });
     });
-
-
 });
 
-describe("Test update server PUT", function(done){
+describe("Test update server PUT", function(){
 
-    before(function(done){
+    before(function(){
         var server1 = {
             "_id": '52865e05ae84f66fee000003',
             "name": "server1",
@@ -116,9 +123,9 @@ describe("Test update server PUT", function(done){
 
         var newServer = modelServer(server1);
         newServer.save();
-        done();
     });
-    it("Update server1", function(done){
+
+    it("Update server1", function(){
         var serverNew = {
             "_id": '52865e05ae84f66fee000003',
             "name": "server123",
@@ -132,7 +139,9 @@ describe("Test update server PUT", function(done){
         request.put('/server').send(serverNew).end(function(err, res){
             assert.equal(200, res.status);
         });
+    });
 
+    it("Looking DB at server if was updated", function(){
         modelServer.findOne({"_id":"52865e05ae84f66fee000003"}, function(err, data){
             assert(data.name, 'serverz123');
             assert(data.rpc_url, 'updater3.domain.com.br:9000');
@@ -140,12 +149,48 @@ describe("Test update server PUT", function(done){
             assert(data.rpc_pass, '123456');
             assert(data.obs, 'rá');
             assert(data.admin_email, 'admin@cloudstats.com');
-            done();
         });
-
-
     });
 });
+
+describe("Test delete server DELETE", function(){
+
+    before(function(){
+        //creating server
+        var server2 = {
+            "_id": '52865e05ae84f66fee000004',
+            "name": "server1",
+            "rpc_url": "updater1.domain.com.br:9000",
+            "rpc_user": "ghost",
+            "rpc_pass": "12345",
+            "obs": "rrá",
+            "admin_email": 'admin@cloudstats.com'
+        };
+
+        var newServer2 = modelServer(server2);
+        newServer2.save();
+    });
+
+    it("Looking at the db if exist", function(){
+        modelServer.findOne({"_id":"52865e05ae84f66fee000004"}, function(err, data){
+            console.log(data);
+            assert.equal(data.length, 1);
+        });
+    });
+
+    it("Delete server2", function(){
+        request.del('/server/52865e05ae84f66fee000004').end(function(err, res){
+            assert.equal(200, res.status);
+        });
+    });
+
+    it("Looking at the db", function(){
+        modelServer.findOne({"_id":"52865e05ae84f66fee000004"}, function(err, data){
+            assert.equal(data.length, 0);
+        });
+    });
+});
+
 
 //describe("", function(done){
 //    it("", function(done){
