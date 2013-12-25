@@ -35,13 +35,8 @@ module.exports = function(app, server_io){
                                subject:  '[supervisord] ' + req.body.processname + " stopped on server " + req.body.hostname,
                                text:     'Verifique em ' + server.rpc_url
                            });
-                           email.addCategory("alert_supervisor")
-                           function(err, json) {
-                               if (err) {
-                                   return console.error(err);
-                               }
-                               return json;
-                           }
+                           email.addCategory("alert_supervisor");
+
                            if (app.get("push_user") != null && app.get("push_token") != null){
                                var msg = {
                                    message: 'Look in ' + server.rpc_url,
@@ -51,7 +46,7 @@ module.exports = function(app, server_io){
                                };
                                var p = new push( {
                                    user: app.get('push_user'),
-                                   token: app.get('push_token'),
+                                   token: app.get('push_token')
                                });
                                p.send( msg, function( err, result ) {
                                    if ( err ) {
@@ -60,12 +55,15 @@ module.exports = function(app, server_io){
                                    console.log( result );
                                });
                            }
-                       }
-                       else {
-                           console.log("Server not found!");
-                       }
-                   });
+                       }else{console.log("Server not found!");}
+                       }, function(err, json) {
+                           if (err) {
+                               return console.error(err);
+                           }
+                           return json;
+                       })
+               );
            }
        }
-    }
+    };
 };
