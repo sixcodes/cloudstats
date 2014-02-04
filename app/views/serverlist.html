@@ -1,0 +1,37 @@
+<div class="span4"></div>
+<div class="span8">
+
+    <h1>Servidores</h1>
+    <table class="table table-condensed table-bordered">
+        <thead>
+            <tr>
+                <td>Nome</td>
+                <td>URL</td>
+                <td>Admin</td>
+                <td></td>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr ng-repeat="server in servers">
+                <td><a ng-href="#/server/{{server._id}}/process"> {{server.name || server._id}}</a></td>
+                <td>{{server.rpc_url}}</td>
+                <td>{{server.admin_email}}</td>
+                <td>
+                    <div class="btn-toolbar">
+                        <div class="btn-group">
+                            <a class="btn" ng-click="_delete(server._id)"><i class="icon-trash"></i></a>
+                            <a class="btn" ng-href="#/server/edit/{{server._id}}"><i class="icon-edit"></i></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <a class="btn btn-primary" ng-href="#/server/add"> Novo Servidor</a>
+
+</div>

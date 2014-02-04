@@ -1,0 +1,73 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <!-- build:css(.tmp) styles/main.css -->
+        <link rel="stylesheet" href="styles/bootstrap.css">
+        <link rel="stylesheet" href="styles/main.css">
+        <!-- endbuild -->
+</head>
+  <body ng-app="dashSupervisorFrontApp">
+    <div class="container">
+            <div class="container" ng-controller="NavbarCtrl">
+                <div class="navbar navbar-inverse navbar-fixed-top">
+                  <div class="navbar-inner">
+                    <a class="brand" href="#">Dashboard</a>
+                    <ul class="nav">
+                      <li ng-repeat="(index, link) in _links" class="{{_active[link['name']]}}">
+                          <a href="#/{{link['url']}}"
+                             ng-click=activate(link['name'])>{{link['name']}}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            </div>
+
+    </div>
+    <div class="container_" style="margin-top: 40px;">
+            <div ng-view=""></div>
+    </div>
+
+    <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+
+        <!-- build:js scripts/plugins.js -->
+        <script src="bower_components/bootstrap-sass/js/bootstrap-affix.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-alert.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-dropdown.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-tooltip.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-modal.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-transition.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-button.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-popover.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-typeahead.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-carousel.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-scrollspy.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-collapse.js"></script>
+        <script src="bower_components/bootstrap-sass/js/bootstrap-tab.js"></script>
+        <script src="bower_components/bootstrap-ui/dist/ui-bootstrap-0.6.0.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+
+        <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
+        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/Navbar.js"></script>
+        <script src="scripts/controllers/Server.js"></script>
+        <script src="scripts/controllers/ServerAdd.js"></script>
+        <script src="scripts/controllers/ServerEdit.js"></script>
+        <script src="scripts/controllers/ServerDetail.js"></script>
+        <script src="scripts/services/socket.js"></script>
+        <!-- endbuild -->
+</body>
+</html>

@@ -1,0 +1,54 @@
+
+<div class="loading" ng-show="!process || action_running"></div>
+<div class="span2"></div>
+<div class="span10">
+
+    <h1>Server Processes</h1>
+        <div>
+            <div id="teste" class="feedback {{alert_type}} notification" style="top: 60px;" ng-show="alerts.length > 0">
+                <div class="notification-content">
+                    <span class="notification-icon"></span>
+                    <span class="notification-message">{{alerts[0]}}</span>
+                    <a class="notification-close" ng-click="closeAlert(0)">×</a>
+                    <b class="clear"></b>
+                </div>
+            </div>
+        </div>
+            <div ng-repeat="(groupname, process_list) in _by_groupname">
+                <div>
+                    <a ng-click="_open_state[groupname] = !_open_state[groupname]">{{groupname}}</a>
+                    <span class="pull-right">
+                        <span class="label label-success">{{_process_count_by_group[groupname]["RUNNING"]}}</span>
+                        <span class="label label-important">{{_process_count_by_group[groupname]["STOPPED"]}}</span>
+                    </span>
+                    <hr/>
+                </div>
+                <div ng-show="_open_state[groupname]">
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <td>Nome</td>
+                                <td>Info</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr ng-repeat="p in process_list">
+                                <td>{{p.group}}:{{p.name}}</td>
+                                <td>{{p.description}}, {{p.statename}}</td>
+                                <td>
+                                    <div class="btn-toolbar">
+                                        <div class="btn-group">
+                                            <a class="btn btn-mini" ng-click="_start(p.group + ':' + p.name)" ng-href="" ng-show="p.statename == 'STOPPED' || p.statename == 'FATAL'"><i class="icon-play"></i></a>
+                                            <a class="btn btn-mini" ng-click="_stop(p.group + ':' + p.name)" ng-show="p.statename == 'RUNNING'"><i class="icon-stop"></i></a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+</div>
