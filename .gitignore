@@ -27,6 +27,7 @@ dist
 .tmp
 .sass-cache
 app/bower_components
+front/app/bower_components/
 .idea/*
 build
 eggs
