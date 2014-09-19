@@ -64,7 +64,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'PORT': '3306',
-        'NAME': "",
+        'NAME': "cloudstats",
         'USER': "root",
         'PASSWORD': "",
         'HOST': "localhost",
@@ -90,3 +90,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/collect/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/collect")
+
+try:
+    from settings_local import *
+except:
+    pass
