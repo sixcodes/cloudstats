@@ -1,5 +1,5 @@
 (function (){
 
-    var app = angular.module("cloudstats", []);
+    var app = angular.module("cloudstats", ["authModule"]);
 
 })();
