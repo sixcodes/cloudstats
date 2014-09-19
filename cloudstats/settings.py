@@ -96,6 +96,8 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': 10
 }
 
+APPEND_SLASH = True
+
 try:
     from settings_local import *
 except:
