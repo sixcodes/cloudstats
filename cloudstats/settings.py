@@ -92,6 +92,10 @@ USE_TZ = True
 STATIC_URL = '/static/collect/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/collect")
 
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 10
+}
+
 try:
     from settings_local import *
 except:
