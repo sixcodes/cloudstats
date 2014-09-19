@@ -12,6 +12,6 @@ router.register(r"groups", views.GroupViewSet)
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^/', 'angularjs.views.index'),
+    url(r'^', 'angularjs.views.index'),
     url(r'^api/', include(router.urls)),
 )
