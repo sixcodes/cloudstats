@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'angularjs',
     'api',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
