@@ -12,6 +12,7 @@ router.register(r"groups", views.GroupViewSet)
 
 urlpatterns = patterns('',
     url(r'^$', 'angularjs.views.index'),
+    url(r'^api-login/', 'rest_framework.authtoken.views.obtain_auth_token'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(router.urls)),
 )

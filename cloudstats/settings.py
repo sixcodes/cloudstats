@@ -41,6 +41,8 @@ INSTALLED_APPS = (
     'angularjs',
     'api',
     'rest_framework',
+    'rest_framework.authtoken',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -93,7 +95,10 @@ STATIC_URL = '/static/collect/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/collect")
 
 REST_FRAMEWORK = {
-    'PAGINATE_BY': 10
+    'PAGINATE_BY': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
 }
 
 APPEND_SLASH = True
