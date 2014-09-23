@@ -101,7 +101,7 @@ REST_FRAMEWORK = {
     )
 }
 
-APPEND_SLASH = True
+APPEND_SLASH = False
 
 try:
     from settings_local import *
