@@ -1,13 +1,21 @@
 (function (){
 
-    var authmodule = angular.module("authModule", [])
-        .controller("AuthController", function(){
+    var authmodule = angular.module("authModule", []);
 
-            this.login_ok = false;
+    authmodule.controller("AuthController", ['$http', '$location', '$log', function($http, $location){
+
+            var ctrl = this;
 
             this.login = function(){
-                this.login_ok = true;
+                $http.post("/api-login/", {username: this.username, password: this.password})
+                    .success(function (data){
+                        $location.path("/servers");
+                    })
+                    .error(function(data){
+                        ctrl.login_failed = true;
+                        $location.path("/");
+                    });
             };
-    });
+    }]);
 
 })();
