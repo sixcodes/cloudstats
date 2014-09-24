@@ -27,7 +27,8 @@ module.exports = function(grunt) {
                 options: {
                     specs: [
                         'test/controllers/*.js',
-                        'test/services/*.js'
+                        'test/services/*.js',
+                        'test/app.js'
                     ],
                     helpers: [
 
