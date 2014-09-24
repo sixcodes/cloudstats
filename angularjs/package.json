@@ -1,0 +1,18 @@
+{
+  "name": "cloudstats",
+  "version": "0.0.1",
+  "description": "Aplicação AngularJS para o cloudstats",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jasmine": "^0.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sievetech/cloudstats.git"
+  },
+  "author": "Sieve",
+  "license": "BSD",
+  "dependencies": {
+
+  }
+}
