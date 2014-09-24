@@ -21,14 +21,16 @@ module.exports = function(grunt) {
             dist: {
                 src: [
                     'app/controllers/*.js',
-                    'app/services/*.js'
+                    'app/services/*.js',
+                    'app/app.js'
                 ],
                 options: {
                     specs: [
-                        'test/controllers/*.js'
+                        'test/controllers/*.js',
+                        'test/services/*.js'
                     ],
                     helpers: [
-                        //'jasmine/runner/*.js'
+
                     ],
                     /*styles: [
                         'jasmine/runner/style.css',
@@ -38,10 +40,11 @@ module.exports = function(grunt) {
                     vendor: [
                         'app/js/angular.min.js',
                         'app/js/angular-resource.min.js',
-                        'app/js/angular-route.min.js'
-                    ]
-                    //outfile: 'runner.html',
-                    //keepRunner: true,
+                        'app/js/angular-route.min.js',
+                        'test/angular-mocks.js'
+                    ],
+                    outfile: 'runner.html',
+                    keepRunner: true
                     //template: 'test/runner.tmpl',
 //                    junit: {
 //                        path: '.reports/junit/'
