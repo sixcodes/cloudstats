@@ -57,3 +57,5 @@ nosetests.xml
 supervisord.conf
 public/
 ./static/
+.grunt/
+runner.html
