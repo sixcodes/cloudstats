@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.test import TestCase, client
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 import json
 
 from api.models import Server, User, Token, Stats
@@ -64,20 +65,22 @@ class StatsAPITest(TestCase):
         }
         server = Server(name="server", ipaddress="127.0.0.1")
         server.save()
-        response = self.client.post(reverse('stats-list'), content_type='application/json', data=json.dumps(stats_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
-        self.assertEqual(201, response.status_code)
-
-        stats = Stats.objects.filter(server=server).all()
-        self.assertEqual(1, len(stats))
-        self.assertEqual(stats[0].load, Decimal("80.2"))
-        self.assertEqual(stats[0].mem, Decimal("60.3"))
-        self.assertEqual(stats[0].swap, Decimal("10.2"))
-        self.assertEqual(stats[0].uptime, 10000)
+        cache_key = "stats-{}-{}".format(server.id, server.ipaddress)
 
         response = self.client.post(reverse('stats-list'), content_type='application/json', data=json.dumps(stats_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
         self.assertEqual(201, response.status_code)
 
-        self.assertEqual(2, Stats.objects.filter(server=server).all().count())
+        saved_stats = cache.get(cache_key)
+        self.assertIsNotNone(saved_stats)
+        self.assertDictEqual(saved_stats, stats_data)
+
+        stats_data['uptime'] = 20000
+        response = self.client.post(reverse('stats-list'), content_type='application/json', data=json.dumps(stats_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+        self.assertEqual(201, response.status_code)
+
+        saved_stats = cache.get(cache_key)
+        self.assertEqual(20000, saved_stats['uptime'])
+
 
     def test_create_stats_for_unknown_server(self):
         stats_data = {

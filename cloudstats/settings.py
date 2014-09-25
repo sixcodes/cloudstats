@@ -103,6 +103,12 @@ REST_FRAMEWORK = {
 
 APPEND_SLASH = False
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 try:
     from settings_local import *
 except:

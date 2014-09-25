@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework import status
@@ -41,5 +42,6 @@ class StatsView(viewsets.ModelViewSet):
         if not server.exists():
             return Response(status=400)
 
-        request.DATA['server'] = server[0].id
-        return super(viewsets.ModelViewSet, self).create(request,*args, **kwargs)
+        key = "stats-{}-{}".format(server[0].id, server[0].ipaddress)
+        cache.set(key, request.DATA)
+        return Response(request.DATA, status.HTTP_201_CREATED)
