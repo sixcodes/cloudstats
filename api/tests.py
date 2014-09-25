@@ -81,7 +81,6 @@ class StatsAPITest(TestCase):
         saved_stats = cache.get(cache_key)
         self.assertEqual(20000, saved_stats['uptime'])
 
-
     def test_create_stats_for_unknown_server(self):
         stats_data = {
             "load": 80.2,
@@ -92,7 +91,3 @@ class StatsAPITest(TestCase):
 
         response = self.client.post(reverse('stats-list'), content_type='application/json', data=json.dumps(stats_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
         self.assertEqual(400, response.status_code)
-
-        stats = Stats.objects.filter(server__ipaddress="127.0.0.1").all()
-        self.assertEqual(0, len(stats))
-
