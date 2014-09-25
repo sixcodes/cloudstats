@@ -9,3 +9,11 @@ from django.contrib.auth.models import User
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+class Server(models.Model):
+
+    name = models.CharField(max_length=64, null=False, blank=False)
+    ipaddress = models.IPAddressField()
+    supervisord_port = models.IntegerField()
+    supervisord_pwd = models.CharField(max_length=32)

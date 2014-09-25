@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
+from api.models import Server
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -9,7 +10,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'username', 'email', 'groups')
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class ServerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Group
-        fields = ('url', 'name')
+        model = Server
+        fields = ('name', 'ipaddress', 'supervisord_port', 'supervisord_pwd')
