@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
+from django.core.cache import cache
 
 
 @receiver(post_save, sender=User)
@@ -18,6 +19,12 @@ class Server(models.Model):
     supervisord_port = models.IntegerField(null=True, blank=True)
     supervisord_pwd = models.CharField(max_length=32, null=True, blank=True)
 
+    def fetch_stats(self):
+        return cache.get(self._get_stats_key())
+
+    def _get_stats_key(self):
+        return "stats-{}-{}".format(self.id, self.ipaddress)
+
 
 class Stats(models.Model):
 
@@ -25,4 +32,3 @@ class Stats(models.Model):
     load = models.DecimalField(decimal_places=2, max_digits=5)
     swap = models.DecimalField(decimal_places=2, max_digits=5)
     uptime = models.BigIntegerField()
-    server = models.ForeignKey(Server)

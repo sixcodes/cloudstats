@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, mixins
 
 from api.models import Server, Stats
 from api.serializers import UserSerializer, ServerSerializer, StatsSerializer
@@ -18,7 +18,10 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class ServerView(viewsets.ModelViewSet):
+class ServerView(mixins.CreateModelMixin,
+                 mixins.ListModelMixin,
+                 mixins.RetrieveModelMixin,
+                 viewsets.GenericViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServerSerializer
     queryset = Server.objects.all()
@@ -28,7 +31,7 @@ class ServerView(viewsets.ModelViewSet):
         if Server.objects.filter(ipaddress=remote_addr).exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         request.DATA['ipaddress'] = remote_addr
-        return super(viewsets.ModelViewSet, self).create(request, *args, **kwargs)
+        return super(ServerView, self).create(request, *args, **kwargs)
 
 
 class StatsView(viewsets.ModelViewSet):

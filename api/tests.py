@@ -48,6 +48,30 @@ class ServerAPITest(TestCase):
         server = Server.objects.all()[0]
         self.assertEqual("127.0.0.1", server.ipaddress)
 
+    def test_list_servers(self):
+        server = Server(**self.server_data)
+        server.save()
+
+        response = self.client.get(reverse('server-list'), content_type='application/json', HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+        self.assertEqual(200, response.status_code)
+
+    def test_retrieve_server_with_stats(self):
+        stats_data = {
+            "load": 80.2,
+            "mem": 60.3,
+            "swap": 10.2,
+            "uptime": 10000,
+        }
+        server = Server(name="server", ipaddress="127.0.0.1")
+        server.save()
+
+        cache_key = "stats-{}-{}".format(server.id, server.ipaddress)
+        cache.set(cache_key, stats_data)
+        response = self.client.get(reverse('server-detail', args=(server.id,)), content_type='application/json', HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+        self.assertEqual(200, response.status_code)
+
+        self.assertDictEqual(stats_data, json.loads(response.content)['stats'])
+
 
 class StatsAPITest(TestCase):
 
