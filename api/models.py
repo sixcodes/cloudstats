@@ -15,5 +15,14 @@ class Server(models.Model):
 
     name = models.CharField(max_length=64, null=False, blank=False)
     ipaddress = models.IPAddressField()
-    supervisord_port = models.IntegerField()
-    supervisord_pwd = models.CharField(max_length=32)
+    supervisord_port = models.IntegerField(null=True)
+    supervisord_pwd = models.CharField(max_length=32, null=True)
+
+
+class Stats(models.Model):
+
+    mem = models.DecimalField(decimal_places=2, max_digits=5)
+    load = models.DecimalField(decimal_places=2, max_digits=5)
+    swap = models.DecimalField(decimal_places=2, max_digits=5)
+    uptime = models.BigIntegerField()
+    server = models.ForeignKey(Server)

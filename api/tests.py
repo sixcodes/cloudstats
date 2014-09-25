@@ -1,8 +1,9 @@
+from decimal import Decimal
 from django.test import TestCase, client
 from django.core.urlresolvers import reverse
 import json
 
-from api.models import Server, User, Token
+from api.models import Server, User, Token, Stats
 
 
 class ServerAPITest(TestCase):
@@ -45,4 +46,50 @@ class ServerAPITest(TestCase):
         self.assertEqual(201, response.status_code)
         server = Server.objects.all()[0]
         self.assertEqual("127.0.0.1", server.ipaddress)
+
+
+class StatsAPITest(TestCase):
+
+    def setUp(self):
+        self.u = User.objects.create_user("testuser", password="secret")
+        self.token = Token.objects.filter(user=self.u).all()[0]
+        self.client = client.Client()
+
+    def test_create_stats_for_server(self):
+        stats_data = {
+            "load": 80.2,
+            "mem": 60.3,
+            "swap": 10.2,
+            "uptime": 10000,
+        }
+        server = Server(name="server", ipaddress="127.0.0.1")
+        server.save()
+        response = self.client.post(reverse('stats-list'), content_type='application/json', data=json.dumps(stats_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+        self.assertEqual(201, response.status_code)
+
+        stats = Stats.objects.filter(server=server).all()
+        self.assertEqual(1, len(stats))
+        self.assertEqual(stats[0].load, Decimal("80.2"))
+        self.assertEqual(stats[0].mem, Decimal("60.3"))
+        self.assertEqual(stats[0].swap, Decimal("10.2"))
+        self.assertEqual(stats[0].uptime, 10000)
+
+        response = self.client.post(reverse('stats-list'), content_type='application/json', data=json.dumps(stats_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+        self.assertEqual(201, response.status_code)
+
+        self.assertEqual(2, Stats.objects.filter(server=server).all().count())
+
+    def test_create_stats_for_unknown_server(self):
+        stats_data = {
+            "load": 80.2,
+            "mem": 60.3,
+            "swap": 10.2,
+            "uptime": 10000,
+        }
+
+        response = self.client.post(reverse('stats-list'), content_type='application/json', data=json.dumps(stats_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+        self.assertEqual(400, response.status_code)
+
+        stats = Stats.objects.filter(server__ipaddress="127.0.0.1").all()
+        self.assertEqual(0, len(stats))
 

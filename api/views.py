@@ -3,8 +3,12 @@ from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework import status
 
-from api.models import Server
-from api.serializers import UserSerializer, ServerSerializer
+from api.models import Server, Stats
+from api.serializers import UserSerializer, ServerSerializer, StatsSerializer
+
+
+def _get_client_ip_address(request):
+    return request.META.get('REMOTE_ADDR', None)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -19,8 +23,23 @@ class ServerView(viewsets.ModelViewSet):
     queryset = Server.objects.all()
 
     def create(self, request, *args, **kwargs):
-        remote_addr = request.META.get('REMOTE_ADDR', None)
+        remote_addr = _get_client_ip_address(request)
         if Server.objects.filter(ipaddress=remote_addr).exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         request.DATA['ipaddress'] = remote_addr
         return super(viewsets.ModelViewSet, self).create(request, *args, **kwargs)
+
+
+class StatsView(viewsets.ModelViewSet):
+    queryset = Stats.objects.all()
+    serializer_class = StatsSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request, *args, **kwargs):
+        ip_address = _get_client_ip_address(request)
+        server = Server.objects.filter(ipaddress=ip_address).all()
+        if not server.exists():
+            return Response(status=400)
+
+        request.DATA['server'] = server[0].id
+        return super(viewsets.ModelViewSet, self).create(request,*args, **kwargs)
