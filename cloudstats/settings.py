@@ -46,6 +46,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'api.middleware.SetRemoteAddrMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -101,7 +102,7 @@ REST_FRAMEWORK = {
     )
 }
 
-APPEND_SLASH = False
+APPEND_SLASH = True
 
 CACHES = {
     'default': {
