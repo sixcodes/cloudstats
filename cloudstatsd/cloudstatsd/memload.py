@@ -46,8 +46,11 @@ def main():
             "uptime": get_uptime()
         }
 
-        response = _make_request("stats/", data)
-        print response.status_code, response.content
+        try:
+            response = _make_request("stats/", data)
+            print response.status_code, response.content
+        except:
+            pass
 
 
 if __name__ == "__main__":
