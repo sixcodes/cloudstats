@@ -1,6 +1,6 @@
 (function (){
 
-    var app = angular.module("cloudstats", ["ngRoute", "ngResource", "authModule", "serverModule", "TokenModule", "ServerModule"]);
+    var app = angular.module("cloudstats", ["ngRoute", "ngResource", "authModule", "serverModule", "TokenModule", "ServerModule", "ngCookies"]);
 
     app.config(function($routeProvider){
         $routeProvider
@@ -16,11 +16,11 @@
             });
     });
 
-    app.factory('sessionInjector', ['$rootScope', function($rootScope) {
+    app.factory('sessionInjector', ['$rootScope', '$cookieStore', function($rootScope, $cookieStore) {
         var sessionInjector = {
             request: function(config) {
-                if ($rootScope.auth_token) {
-                    config.headers['Authorization'] = "Token " + $rootScope.auth_token;
+                if ($cookieStore.get("auth_token")) {
+                    config.headers['Authorization'] = "Token " + $cookieStore.get("auth_token");
                 }
                 return config;
             }

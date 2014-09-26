@@ -6,19 +6,20 @@ describe("Auth Controller", function() {
         module("cloudstats");
     });
 
-    var crtl, scope, httpbackend, rootScope;
+    var crtl, scope, httpbackend, rootScope, cookieStore;
     beforeEach(inject(function($injector){
         var $controller = $injector.get("$controller");
 
         rootScope = $injector.get("$rootScope");
         scope = rootScope.$new();
         httpbackend = $injector.get("$httpBackend");
+        cookieStore = $injector.get("$cookieStore");
 
         crtl = $controller("AuthController", {
             $scope: scope,
             $location: $injector.get("$location"),
             TokenService: $injector.get("TokenService"),
-            $rootScope: rootScope
+            $cookieStore: cookieStore
         });
     }));
 
@@ -39,7 +40,7 @@ describe("Auth Controller", function() {
         crtl.login();
         httpbackend.flush();
         expect(crtl.login_failed).toBe(false);
-        expect(rootScope.auth_token).toEqual("abdf364ad");
+        expect(cookieStore.get("auth_token")).toEqual("abdf364ad");
 
     });
 
@@ -51,7 +52,7 @@ describe("Auth Controller", function() {
         httpbackend.flush();
         expect(crtl.login_failed).toBe(true);
         expect(crtl.token).toBeUndefined();
-        expect(rootScope.auth_token).toBeUndefined();
+        expect(cookieStore.get("auth_token")).toBeUndefined();
 
     });
 });

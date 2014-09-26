@@ -42,7 +42,8 @@ module.exports = function(grunt) {
                         'app/js/angular.min.js',
                         'app/js/angular-resource.min.js',
                         'app/js/angular-route.min.js',
-                        'test/angular-mocks.js'
+                        'test/angular-mocks.js',
+                        'app/js/angular-cookies.min.js'
                     ],
                     outfile: 'runner.html',
                     keepRunner: true

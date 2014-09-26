@@ -2,7 +2,7 @@
 
     var authmodule = angular.module("authModule", []);
 
-    authmodule.controller("AuthController", ['$location', 'TokenService', '$rootScope', function($location, TokenService, $rootScope){
+    authmodule.controller("AuthController", ['$location', 'TokenService', '$cookieStore', function($location, TokenService, $cookieStore){
 
             var ctrl = this;
 
@@ -11,7 +11,7 @@
                     function(data){
                         ctrl.login_failed = false;
                         $location.path("/servers");
-                        $rootScope.auth_token = data.token;
+                        $cookieStore.put("auth_token", data.token);
                     },
                     function(data){
                         ctrl.login_failed = true;
