@@ -29,11 +29,17 @@ class ServerAPITest(TestCase):
         self.assertEqual(etl_server.supervisord_port, self.server_data['supervisord_port'])
         self.assertEqual(etl_server.supervisord_pwd, self.server_data['supervisord_pwd'])
 
-    def test_donot_create_servers_with_same_ip_address(self):
-        server = Server(**self.server_data)
-        server.save()
+    def test_create_same_server_twice(self):
         response = self.client.post(reverse('server-list'), content_type='application/json', data=json.dumps(self.server_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(201, response.status_code)
+        etl_server = Server.objects.filter(name="etl").all()[0]
+        self.assertEqual(etl_server.name, self.server_data['name'])
+        self.assertEqual(etl_server.ipaddress, self.server_data['ipaddress'])
+
+        response = self.client.post(reverse('server-list'), content_type='application/json', data=json.dumps(self.server_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+        self.assertEqual(201, response.status_code)
+        all_servers = Server.objects.filter(name="etl").all().count()
+        self.assertEqual(1, all_servers)
 
     def test_donot_trust_data_ipaddress(self):
         """

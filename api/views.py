@@ -29,7 +29,7 @@ class ServerView(mixins.CreateModelMixin,
     def create(self, request, *args, **kwargs):
         remote_addr = _get_client_ip_address(request)
         if Server.objects.filter(ipaddress=remote_addr).exists():
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_201_CREATED)
         request.DATA['ipaddress'] = remote_addr
         return super(ServerView, self).create(request, *args, **kwargs)
 

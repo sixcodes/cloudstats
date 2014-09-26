@@ -3,9 +3,10 @@
 
     <div ng-repeat="s in servers">
 
-            <div>{{ s.name }} | {{ s.ipaddress }}</div>
+            <div><a ng-href="http://{{ s.ipaddress }}:9000/"> {{ s.name }} </a> | {{ s.ipaddress }}</div>
             <div ng-repeat="(stat_name, stat_value) in s.stats">
                 {{ stat_name }}: {{ stat_value }} |
             </div>
+        abd
     </div>
 </div>
