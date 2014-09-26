@@ -2,28 +2,17 @@
 
     var authmodule = angular.module("serverModule", []);
 
-    authmodule.controller("ServersController", ['$http', '$location', '$log', function($http, $location, $log){
+    authmodule.controller("ServersController", ['ServerService', '$scope', function(ServerService, $scope){
 
         var ctrl = this;
-        this.servers = [
-            {
-                name: "ETL",
-                ipaddress: "0.0.0.0"
-            },
-            {
-                name: "Updater",
-                ipaddress: "0.0.0.1"
-            }
-        ];
+        ServerService.query(function(data){
+            $scope.servers = data.results;
+        }, function (data) {
+
+        });
 
 
-        $http.get("/api/users/")
-            .success(function(data){
-                $log.log("/users sucess");
-        })
-            .error(function(data){
-                $log.log("/users error");
-            });
+
     }]);
 
 })();

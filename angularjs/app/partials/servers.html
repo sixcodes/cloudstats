@@ -1,11 +1,11 @@
 <div>
     <h3>Servers Listing</h3>
 
-    <div ng-repeat="s in serverCtrl.servers">
-        <p>
-            <div>{{ s.name }}</div>
-            <div>{{ s.ipaddress }}</div>
+    <div ng-repeat="s in servers">
 
-        </p>
+            <div>{{ s.name }} | {{ s.ipaddress }}</div>
+            <div ng-repeat="(stat_name, stat_value) in s.stats">
+                {{ stat_name }}: {{ stat_value }} |
+            </div>
     </div>
 </div>

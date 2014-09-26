@@ -1,6 +1,6 @@
 (function (){
 
-    var app = angular.module("cloudstats", ["ngRoute", "ngResource", "authModule", "serverModule", "TokenModule"]);
+    var app = angular.module("cloudstats", ["ngRoute", "ngResource", "authModule", "serverModule", "TokenModule", "ServerModule"]);
 
     app.config(function($routeProvider){
         $routeProvider
