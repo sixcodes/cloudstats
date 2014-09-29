@@ -5,7 +5,7 @@ from api import views
 
 from rest_framework import routers
 
-router = routers.DefaultRouter()
+router = routers.DefaultRouter(trailing_slash=False)
 router.register(r"users", views.UserViewSet)
 router.register(r"servers", views.ServerView)
 router.register(r"stats", views.StatsView)

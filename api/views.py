@@ -3,6 +3,7 @@ from django.core.cache import cache
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework import status, mixins
+from rest_framework import decorators
 
 from api.models import Server, Stats
 from api.serializers import UserSerializer, ServerSerializer, StatsSerializer
@@ -32,6 +33,11 @@ class ServerView(mixins.CreateModelMixin,
             return Response(status=status.HTTP_201_CREATED)
         request.DATA['ipaddress'] = remote_addr
         return super(ServerView, self).create(request, *args, **kwargs)
+
+    @decorators.detail_route(methods=['get', 'post'])
+    def process(self, request, *args, **kwargs):
+        return Response(status=201, data={"detail": "Created."})
+        pass
 
 
 class StatsView(viewsets.ModelViewSet):

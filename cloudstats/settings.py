@@ -102,7 +102,7 @@ REST_FRAMEWORK = {
     )
 }
 
-APPEND_SLASH = True
+APPEND_SLASH = False
 
 CACHES = {
     'default': {
