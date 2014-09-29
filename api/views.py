@@ -1,16 +1,29 @@
+import os
+from xmlrpclib import ServerProxy
+
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
-from rest_framework import status, mixins
+from rest_framework import status, mixins, generics
 from rest_framework import decorators
+from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from api.models import Server, Stats
+from api.models import Server, Stats, ServerProcess
 from api.serializers import UserSerializer, ServerSerializer, StatsSerializer
 
 
 def _get_client_ip_address(request):
     return request.META.get('REMOTE_ADDR', None)
+
+
+def _get_xml_server_proxy(ipaddress):
+    return ServerProxy("http://{user}:{pwd}@{ipaddress}:{port}/RPC2".format(
+        user=os.environ['CLOUDSTATS_SUPERVISORD_USER'],
+        pwd=os.environ['CLOUDSTATS_SUPWERVISORD_PWD'],
+        ipaddress=ipaddress,
+        port=os.environ['CLOUDSTATS_SUPERVISORD_PORT'])
+    )
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -19,7 +32,8 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class ServerView(mixins.CreateModelMixin,
+class ServerView(NestedViewSetMixin,
+                 mixins.CreateModelMixin,
                  mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
                  viewsets.GenericViewSet):
@@ -34,10 +48,25 @@ class ServerView(mixins.CreateModelMixin,
         request.DATA['ipaddress'] = remote_addr
         return super(ServerView, self).create(request, *args, **kwargs)
 
-    @decorators.detail_route(methods=['get', 'post'])
-    def process(self, request, *args, **kwargs):
-        return Response(status=201, data={"detail": "Created."})
-        pass
+
+class ServerProcessView(NestedViewSetMixin,
+                        generics.CreateAPIView,
+                        generics.ListAPIView,
+                        generics.RetrieveAPIView,
+                        viewsets.GenericViewSet):
+
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = ServerSerializer
+    queryset = ServerProcess.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        server_id = kwargs['parent_lookup_server']
+        server = Server.objects.get(id=server_id)
+        xmlrpc = _get_xml_server_proxy(server.ipaddress)
+        return Response(data=xmlrpc.supervisor.getAllProcessInfo())
+
+    def create(self, request, *args, **kwargs):
+        return Response(status=202, data={"detail": "OK"})
 
 
 class StatsView(viewsets.ModelViewSet):

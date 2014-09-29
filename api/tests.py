@@ -1,10 +1,12 @@
-from decimal import Decimal
+import json
+import mock
+import os
+
 from django.test import TestCase, client
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
-import json
 
-from api.models import Server, User, Token, Stats
+from api.models import Server, User, Token
 
 
 class ServerAPITest(TestCase):
@@ -121,3 +123,53 @@ class StatsAPITest(TestCase):
 
         response = self.client.post(reverse('stats-list'), content_type='application/json', data=json.dumps(stats_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
         self.assertEqual(400, response.status_code)
+
+
+class ServerProcessTest(TestCase):
+
+    def setUp(self):
+        self.u = User.objects.create_user("testuser", password="secret")
+        self.token = Token.objects.filter(user=self.u).all()[0]
+        self.client = client.Client()
+
+    def test_list_all_server_processes(self):
+        s = Server(name="localhost", ipaddress="127.0.0.1")
+        s.save()
+        server_id = s.id
+        env_values = {"CLOUDSTATS_SUPERVISORD_PORT": "9000",
+                      "CLOUDSTATS_SUPERVISORD_USER": "sieve",
+                      "CLOUDSTATS_SUPWERVISORD_PWD": "pwd"}
+        env_values.update(os.environ)
+        server_proxy_mock = mock.MagicMock()
+        with mock.patch("xmlrpclib.ServerProxy", return_value=server_proxy_mock) as xmlrpc_server,\
+             mock.patch.dict('os.environ', env_values):
+
+            process_list_info = [{'description': 'pid 9437, uptime 1:10:11', 'exitstatus': 0, 'group': 'reprice',
+                                  'name': 'reprice_worker', 'pid': 9437, 'statename': 'RUNNING'},
+                                 {'description': 'pid 2345, uptime 1:10:11', 'exitstatus': 0, 'group': 'etl', 'name': 'etl',
+                                  'pid': 2345, 'statename': 'RUNNING'},
+                                 ]
+
+            server_proxy_mock.supervisor.getAllProcessInfo.return_value = process_list_info
+
+            resposnse = self.client.get(reverse("server-processes-list", args=(server_id,)),
+                                        content_type='application/json',
+                                        HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+            self.assertEqual(200, resposnse.status_code)
+
+            self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], xmlrpc_server.call_args_list)
+            self.assertEqual([mock.call()], server_proxy_mock.supervisor.getAllProcessInfo.call_args_list)
+            self.assertListEqual(process_list_info, json.loads(resposnse.content))
+
+    def test_check_calling_richt_action(self):
+        """
+        Actions: "start", "stop", "restart"
+        :return:
+        """
+        self.fail()
+
+    def test_modify_process_of_unkown_server(self):
+        self.fail()
+
+
+

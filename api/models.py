@@ -26,6 +26,13 @@ class Server(models.Model):
         return "stats-{}-{}".format(self.id, self.ipaddress)
 
 
+class ServerProcess(models.Model):
+
+    name = models.CharField(max_length=64, null=False, blank=False)
+    group = models.CharField(max_length=64, null=True, blank=True)
+    status = models.CharField(max_length=64, null=True, blank=True)
+
+
 class Stats(models.Model):
 
     mem = models.DecimalField(decimal_places=2, max_digits=5)

@@ -15,7 +15,11 @@
         this.process = function(server){
             console.log(server);
             console.log(ProcessService);
-            ProcessService.post({serverId: server.id, processName: "etl0/1"});
+            ProcessService.post({serverId: server.id, procName: "etl0/1".replace("/", "-")});
+        };
+
+        this.list_all = function(server){
+            ProcessService.query({serverId: server.id});
         }
 
     }]);
