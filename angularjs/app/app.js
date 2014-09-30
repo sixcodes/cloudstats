@@ -28,6 +28,22 @@
         return sessionInjector;
     }]);
 
+    app.factory("ProcessFactory", function(){
+        return function(process_data){
+                return {
+                    _data: process_data,
+                    running: function(){
+                        return this._data.statename === 'RUNNING';
+                    },
+
+                    name: process_data.name,
+                    group: process_data.group,
+                    description: process_data.description,
+                    statename : process_data.statename
+                };
+        };
+    });
+
     app.config(['$httpProvider', function($httpProvider) {
         $httpProvider.interceptors.push('sessionInjector');
     }]);

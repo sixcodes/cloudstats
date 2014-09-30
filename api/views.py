@@ -1,16 +1,28 @@
+import os
+from xmlrpclib import ServerProxy
+
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
-from rest_framework import status, mixins
-from rest_framework import decorators
+from rest_framework import status, mixins, generics
+from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from api.models import Server, Stats
+from api.models import Server, Stats, ServerProcess
 from api.serializers import UserSerializer, ServerSerializer, StatsSerializer
 
 
 def _get_client_ip_address(request):
     return request.META.get('REMOTE_ADDR', None)
+
+
+def _get_xml_server_proxy(ipaddress):
+    return ServerProxy("http://{user}:{pwd}@{ipaddress}:{port}/RPC2".format(
+        user=os.environ['CLOUDSTATS_SUPERVISORD_USER'],
+        pwd=os.environ['CLOUDSTATS_SUPERVISORD_PWD'],
+        ipaddress=ipaddress,
+        port=os.environ['CLOUDSTATS_SUPERVISORD_PORT'])
+    )
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -19,7 +31,8 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class ServerView(mixins.CreateModelMixin,
+class ServerView(NestedViewSetMixin,
+                 mixins.CreateModelMixin,
                  mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
                  viewsets.GenericViewSet):
@@ -34,10 +47,60 @@ class ServerView(mixins.CreateModelMixin,
         request.DATA['ipaddress'] = remote_addr
         return super(ServerView, self).create(request, *args, **kwargs)
 
-    @decorators.detail_route(methods=['get', 'post'])
-    def process(self, request, *args, **kwargs):
-        return Response(status=201, data={"detail": "Created."})
-        pass
+
+class ServerProcessView(NestedViewSetMixin,
+                        generics.CreateAPIView,
+                        generics.ListAPIView,
+                        generics.RetrieveAPIView,
+                        viewsets.GenericViewSet):
+
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = ServerSerializer
+    queryset = ServerProcess.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        server_id = kwargs['parent_lookup_server']
+        server = Server.objects.get(id=server_id)
+        xmlrpc = _get_xml_server_proxy(server.ipaddress)
+        data = xmlrpc.supervisor.getAllProcessInfo()
+        try:
+            return Response(data=data)
+        except Exception as e:
+            print e
+
+    def create(self, request, *args, **kwargs):
+        server_id = kwargs['parent_lookup_server']
+        server = Server.objects.get(id=server_id)
+
+        xmlrpc = _get_xml_server_proxy(server.ipaddress)
+
+        process_name = self._get_full_process_name(request.DATA, kwargs['pk'])
+        action = request.DATA.get("action")
+
+        resp = {}
+
+        if action == "start":
+            xmlrpc.supervisor.startProcess(process_name, True)
+        elif action == "stop":
+            xmlrpc.supervisor.stopProcess(process_name, True)
+        elif action == "restart":
+            xmlrpc.supervisor.stopProcess(process_name, True)
+            xmlrpc.supervisor.startProcess(process_name, True)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        resp = xmlrpc.supervisor.getProcessInfo(process_name)
+        return Response(status=202, data=resp)
+
+    def _get_full_process_name(self, reques_data, pname):
+        process_name = pname.replace("-", "/")
+        group = reques_data.get("group")
+        if group:
+            full_process_name = "{}:{}".format(group, process_name)
+        else:
+            full_process_name = process_name
+
+        return full_process_name
 
 
 class StatsView(viewsets.ModelViewSet):

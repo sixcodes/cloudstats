@@ -41,4 +41,8 @@ describe("Server Controller", function() {
         expect(scope.servers.length).toEqual(2);
 
     });
+
+    it("Should replace / for - in all process names", function(){
+        expect(true).toBe(false);
+    });
 });

@@ -1,10 +1,15 @@
-from decimal import Decimal
+#encoding: utf-8
+
+import json
+import mock
+import os
+
 from django.test import TestCase, client
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
-import json
 
-from api.models import Server, User, Token, Stats
+from api.models import Server, User, Token
+import api.views
 
 
 class ServerAPITest(TestCase):
@@ -121,3 +126,138 @@ class StatsAPITest(TestCase):
 
         response = self.client.post(reverse('stats-list'), content_type='application/json', data=json.dumps(stats_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
         self.assertEqual(400, response.status_code)
+
+
+class ServerProcessTest(TestCase):
+
+    def setUp(self):
+        self.u = User.objects.create_user("testuser", password="secret")
+        self.token = Token.objects.filter(user=self.u).all()[0]
+        self.client = client.Client()
+        self.s = Server(name="localhost", ipaddress="127.0.0.1")
+        self.s.save()
+
+        self.env_values = {"CLOUDSTATS_SUPERVISORD_PORT": "9000",
+                           "CLOUDSTATS_SUPERVISORD_USER": "sieve",
+                           "CLOUDSTATS_SUPERVISORD_PWD": "pwd"}
+        self.env_values.update(os.environ)
+        self.env_patcher = mock.patch.dict('os.environ', self.env_values)
+        self.env_patcher.start()
+
+    def test_list_all_server_processes(self):
+        server_id = self.s.id
+
+        process_list_info = [{'description': 'pid 9437, uptime 1:10:11', 'exitstatus': 0, 'group': 'reprice',
+                              'name': 'reprice_worker', 'pid': 9437, 'statename': 'RUNNING'},
+                             {'description': 'pid 2345, uptime 1:10:11', 'exitstatus': 0, 'group': 'etl', 'name': 'etl',
+                              'pid': 2345, 'statename': 'RUNNING'},
+                             ]
+
+        server_proxy_instance_mock = mock.Mock()
+        with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
+
+            server_proxy_instance_mock.supervisor.getAllProcessInfo.return_value = process_list_info
+
+            resposnse = self.client.get(reverse("server-processes-list", args=(server_id,)),
+                                        content_type='application/json',
+                                        HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+            self.assertEqual(200, resposnse.status_code)
+
+            self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
+            self.assertEqual([mock.call()], server_proxy_instance_mock.supervisor.getAllProcessInfo.call_args_list)
+            self.assertListEqual(process_list_info, json.loads(resposnse.content))
+
+    def test_check_calling_right_action_start(self):
+        """
+        Actions: "start", "stop", "restart"
+        :return:
+        """
+
+        payload = {
+            "action": "start",
+            "group": "crawler",
+
+        }
+
+        server_proxy_instance_mock = mock.Mock()
+        with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
+
+            resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
+                                        content_type='application/json',
+                                        HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+            self.assertEqual(202, resposnse.status_code)
+
+            self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", False)], server_proxy_instance_mock.supervisor.startProcess.call_args_list)
+
+    def test_check_calling_right_action_stop(self):
+        """
+        Actions: "start", "stop", "restart"
+        :return:
+        """
+
+        payload = {
+            "action": "stop",
+            "group": "crawler",
+
+        }
+        server_proxy_instance_mock = mock.Mock()
+        with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
+            resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
+                                        content_type='application/json',
+                                        HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+            self.assertEqual(202, resposnse.status_code)
+
+            self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", False)], server_proxy_instance_mock.supervisor.stopProcess.call_args_list)
+
+    def test_check_calling_right_action_restart(self):
+        """
+        Actions: "start", "stop", "restart"
+        :return:
+        """
+
+        payload = {
+            "action": "restart",
+            "group": "crawler",
+
+        }
+
+        server_proxy_instance_mock = mock.Mock()
+        with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
+
+            resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
+                                        content_type='application/json',
+                                        HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+            self.assertEqual(202, resposnse.status_code)
+
+            self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", True)], server_proxy_instance_mock.supervisor.stopProcess.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", False)], server_proxy_instance_mock.supervisor.startProcess.call_args_list)
+
+    def test_check_unknown_restart(self):
+        """
+        :return:
+        """
+
+        payload = {
+            "action": "what",
+            "group": "crawler",
+
+        }
+
+        server_proxy_instance_mock = mock.Mock()
+        with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
+
+            resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
+                                        content_type='application/json',
+                                        HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+            self.assertEqual(400, resposnse.status_code)
+
+    def test_get_full_process_name_without_group(self):
+        request_data = {
+            "action": "start"
+        }
+
+        ps = api.views.ServerProcessView()
+        self.assertEqual("etl0/0", ps._get_full_process_name(request_data, "etl0-0"))
