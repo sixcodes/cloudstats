@@ -139,7 +139,7 @@ class ServerProcessTest(TestCase):
 
         self.env_values = {"CLOUDSTATS_SUPERVISORD_PORT": "9000",
                            "CLOUDSTATS_SUPERVISORD_USER": "sieve",
-                           "CLOUDSTATS_SUPWERVISORD_PWD": "pwd"}
+                           "CLOUDSTATS_SUPERVISORD_PWD": "pwd"}
         self.env_values.update(os.environ)
         self.env_patcher = mock.patch.dict('os.environ', self.env_values)
         self.env_patcher.start()
@@ -188,7 +188,7 @@ class ServerProcessTest(TestCase):
             self.assertEqual(202, resposnse.status_code)
 
             self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
-            self.assertEqual([mock.call("crawler:etl0/0", wait=False)], server_proxy_instance_mock.supervisor.startProcess.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", False)], server_proxy_instance_mock.supervisor.startProcess.call_args_list)
 
     def test_check_calling_right_action_stop(self):
         """
@@ -209,7 +209,7 @@ class ServerProcessTest(TestCase):
             self.assertEqual(202, resposnse.status_code)
 
             self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
-            self.assertEqual([mock.call("crawler:etl0/0", wait=False)], server_proxy_instance_mock.supervisor.stopProcess.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", False)], server_proxy_instance_mock.supervisor.stopProcess.call_args_list)
 
     def test_check_calling_right_action_restart(self):
         """
@@ -232,8 +232,27 @@ class ServerProcessTest(TestCase):
             self.assertEqual(202, resposnse.status_code)
 
             self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
-            self.assertEqual([mock.call("crawler:etl0/0", wait=True)], server_proxy_instance_mock.supervisor.stopProcess.call_args_list)
-            self.assertEqual([mock.call("crawler:etl0/0", wait=False)], server_proxy_instance_mock.supervisor.startProcess.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", True)], server_proxy_instance_mock.supervisor.stopProcess.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", False)], server_proxy_instance_mock.supervisor.startProcess.call_args_list)
+
+    def test_check_unknown_restart(self):
+        """
+        :return:
+        """
+
+        payload = {
+            "action": "what",
+            "group": "crawler",
+
+        }
+
+        server_proxy_instance_mock = mock.Mock()
+        with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
+
+            resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
+                                        content_type='application/json',
+                                        HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+            self.assertEqual(400, resposnse.status_code)
 
     def test_get_full_process_name_without_group(self):
         request_data = {

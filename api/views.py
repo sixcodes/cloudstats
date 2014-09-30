@@ -19,7 +19,7 @@ def _get_client_ip_address(request):
 def _get_xml_server_proxy(ipaddress):
     return ServerProxy("http://{user}:{pwd}@{ipaddress}:{port}/RPC2".format(
         user=os.environ['CLOUDSTATS_SUPERVISORD_USER'],
-        pwd=os.environ['CLOUDSTATS_SUPWERVISORD_PWD'],
+        pwd=os.environ['CLOUDSTATS_SUPERVISORD_PWD'],
         ipaddress=ipaddress,
         port=os.environ['CLOUDSTATS_SUPERVISORD_PORT'])
     )
@@ -78,12 +78,14 @@ class ServerProcessView(NestedViewSetMixin,
         action = request.DATA.get("action")
 
         if action == "start":
-            xmlrpc.supervisor.startProcess(process_name, wait=False)
+            xmlrpc.supervisor.startProcess(process_name, False)
         elif action == "stop":
-            xmlrpc.supervisor.stopProcess(process_name, wait=False)
+            xmlrpc.supervisor.stopProcess(process_name, False)
         elif action == "restart":
-            xmlrpc.supervisor.stopProcess(process_name, wait=True)
-            xmlrpc.supervisor.startProcess(process_name, wait=False)
+            xmlrpc.supervisor.stopProcess(process_name, True)
+            xmlrpc.supervisor.startProcess(process_name, False)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         return Response(status=202, data={"detail": "OK"})
 
