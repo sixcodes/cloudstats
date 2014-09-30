@@ -77,17 +77,20 @@ class ServerProcessView(NestedViewSetMixin,
         process_name = self._get_full_process_name(request.DATA, kwargs['pk'])
         action = request.DATA.get("action")
 
+        resp = {}
+
         if action == "start":
-            xmlrpc.supervisor.startProcess(process_name, False)
+            xmlrpc.supervisor.startProcess(process_name, True)
         elif action == "stop":
-            xmlrpc.supervisor.stopProcess(process_name, False)
+            xmlrpc.supervisor.stopProcess(process_name, True)
         elif action == "restart":
             xmlrpc.supervisor.stopProcess(process_name, True)
-            xmlrpc.supervisor.startProcess(process_name, False)
+            xmlrpc.supervisor.startProcess(process_name, True)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(status=202, data={"detail": "OK"})
+        resp = xmlrpc.supervisor.getProcessInfo(process_name)
+        return Response(status=202, data=resp)
 
     def _get_full_process_name(self, reques_data, pname):
         process_name = pname.replace("-", "/")

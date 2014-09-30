@@ -3,11 +3,22 @@
 
     <div ng-repeat="s in servers">
 
+
             <div><a ng-href="http://{{ s.ipaddress }}:9000/"> {{ s.name }} </a> | {{ s.ipaddress }}</div>
+            <div><a ng-click="serverCtrl.all_processes(s)">refresh</a></div>
             <div ng-repeat="(stat_name, stat_value) in s.stats">
                 {{ stat_name }}: {{ stat_value }} |
             </div>
-            <a ng-click="serverCtrl.process(s)">process</a>
-            <a ng-click="serverCtrl.list_all(s)">list All</a>
+            <div ng-hide="!server_processes[s.id]">
+                <h3>Processos</h3>
+                <div ng-repeat="(p_name, p) in server_processes[s.id]">
+                        {{ p.group }}:{{ p.name }} ({{ p.description }})
+                        <a ng-href="" ng-click="serverCtrl.start(s, p)" ng-show="!serverCtrl.is_running(p.statename)" >| start</a>
+                        <a ng-href="" ng-click="serverCtrl.stop(s, p)" ng-show="serverCtrl.is_running(p.statename)">| stop</a>
+                        <a ng-href="" ng-click="serverCtrl.restart(s, p)" ng-show="serverCtrl.is_running(p.statename)">| restart</a>
+                </div>
+
+            </div>
+
     </div>
 </div>
