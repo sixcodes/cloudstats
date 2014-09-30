@@ -6,7 +6,6 @@ from django.core.cache import cache
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework import status, mixins, generics
-from rest_framework import decorators
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from api.models import Server, Stats, ServerProcess
@@ -63,10 +62,40 @@ class ServerProcessView(NestedViewSetMixin,
         server_id = kwargs['parent_lookup_server']
         server = Server.objects.get(id=server_id)
         xmlrpc = _get_xml_server_proxy(server.ipaddress)
-        return Response(data=xmlrpc.supervisor.getAllProcessInfo())
+        data = xmlrpc.supervisor.getAllProcessInfo()
+        try:
+            return Response(data=data)
+        except Exception as e:
+            print e
 
     def create(self, request, *args, **kwargs):
+        server_id = kwargs['parent_lookup_server']
+        server = Server.objects.get(id=server_id)
+
+        xmlrpc = _get_xml_server_proxy(server.ipaddress)
+
+        process_name = self._get_full_process_name(request.DATA, kwargs['pk'])
+        action = request.DATA.get("action")
+
+        if action == "start":
+            xmlrpc.supervisor.startProcess(process_name, wait=False)
+        elif action == "stop":
+            xmlrpc.supervisor.stopProcess(process_name, wait=False)
+        elif action == "restart":
+            xmlrpc.supervisor.stopProcess(process_name, wait=True)
+            xmlrpc.supervisor.startProcess(process_name, wait=False)
+
         return Response(status=202, data={"detail": "OK"})
+
+    def _get_full_process_name(self, reques_data, pname):
+        process_name = pname.replace("-", "/")
+        group = reques_data.get("group")
+        if group:
+            full_process_name = "{}:{}".format(group, process_name)
+        else:
+            full_process_name = process_name
+
+        return full_process_name
 
 
 class StatsView(viewsets.ModelViewSet):
