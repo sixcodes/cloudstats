@@ -23,8 +23,8 @@ def get_uptime():
         return None
 
 
-def _make_request(resouce, data):
-    return requests.post(api_baseurl + "/" + resouce, data=json.dumps(data), headers=base_headers)
+def _make_request(resoruce, data):
+    return requests.post(api_baseurl + "/" + resoruce, data=json.dumps(data), headers=base_headers)
 
 
 def main():
@@ -33,7 +33,7 @@ def main():
     server_register = {
         "name": socket.gethostname(),
     }
-    resp = _make_request("servers/", server_register)
+    resp = _make_request("servers", server_register)
     print "registering server: {}, status_code={}".format(server_register, resp.status_code)
     print resp.content
 
@@ -47,7 +47,7 @@ def main():
         }
 
         try:
-            response = _make_request("stats/", data)
+            response = _make_request("stats", data)
             print response.status_code, response.content
         except:
             pass
