@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'raven.contrib.django.raven_compat',
+    'gunicorn',
 
 )
 
