@@ -182,13 +182,17 @@ class ServerProcessTest(TestCase):
         server_proxy_instance_mock = mock.Mock()
         with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
 
+            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {}
+
             resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
                                         content_type='application/json',
                                         HTTP_AUTHORIZATION="Token {}".format(self.token.key))
             self.assertEqual(202, resposnse.status_code)
 
+
             self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
-            self.assertEqual([mock.call("crawler:etl0/0", False)], server_proxy_instance_mock.supervisor.startProcess.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", True)], server_proxy_instance_mock.supervisor.startProcess.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0")], server_proxy_instance_mock.supervisor.getProcessInfo.call_args_list)
 
     def test_check_calling_right_action_stop(self):
         """
@@ -203,13 +207,14 @@ class ServerProcessTest(TestCase):
         }
         server_proxy_instance_mock = mock.Mock()
         with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
+            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {}
             resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
                                         content_type='application/json',
                                         HTTP_AUTHORIZATION="Token {}".format(self.token.key))
             self.assertEqual(202, resposnse.status_code)
 
             self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
-            self.assertEqual([mock.call("crawler:etl0/0", False)], server_proxy_instance_mock.supervisor.stopProcess.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", True)], server_proxy_instance_mock.supervisor.stopProcess.call_args_list)
 
     def test_check_calling_right_action_restart(self):
         """
@@ -225,7 +230,7 @@ class ServerProcessTest(TestCase):
 
         server_proxy_instance_mock = mock.Mock()
         with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
-
+            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {}
             resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
                                         content_type='application/json',
                                         HTTP_AUTHORIZATION="Token {}".format(self.token.key))
@@ -233,9 +238,9 @@ class ServerProcessTest(TestCase):
 
             self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
             self.assertEqual([mock.call("crawler:etl0/0", True)], server_proxy_instance_mock.supervisor.stopProcess.call_args_list)
-            self.assertEqual([mock.call("crawler:etl0/0", False)], server_proxy_instance_mock.supervisor.startProcess.call_args_list)
+            self.assertEqual([mock.call("crawler:etl0/0", True)], server_proxy_instance_mock.supervisor.startProcess.call_args_list)
 
-    def test_check_unknown_restart(self):
+    def test_check_unknown_command(self):
         """
         :return:
         """
@@ -248,7 +253,7 @@ class ServerProcessTest(TestCase):
 
         server_proxy_instance_mock = mock.Mock()
         with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
-
+            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {}
             resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
                                         content_type='application/json',
                                         HTTP_AUTHORIZATION="Token {}".format(self.token.key))
