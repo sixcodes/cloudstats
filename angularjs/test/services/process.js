@@ -1,6 +1,7 @@
 
 describe("Process Service", function(){
 
+    var ProcessInstanceFactory;
     var httpbackend, ProcessService;
     var example_proc_data = {
             description: 'Sep 30 02:54 PM',
@@ -18,6 +19,7 @@ describe("Process Service", function(){
             stdout_logfile: '',
             stop: 1412099659
     };
+
     var server = {
         id: 1
     };
@@ -27,6 +29,7 @@ describe("Process Service", function(){
         inject(function($injector){
             httpbackend = $injector.get("$httpBackend");
             ProcessService = $injector.get("ProcessService");
+            ProcessInstanceFactory = $injector.get("ProcessInstance");
         });
 
     });
@@ -83,4 +86,31 @@ describe("Process Service", function(){
         httpbackend.flush();
 
     });
+
+    it("Should build an object from a dict response", function(){
+        var data = {
+            description: 'Sep 30 02:54 PM',
+            exitstatus: -1,
+            group: 'verifysetup',
+            logfile: '',
+            name: 'verifysetup/0',
+            now: 1412117279,
+            pid: 0,
+            spawnerr: '',
+            start: 1412099636,
+            state: 0,
+            statename: 'STOPPED',
+            stderr_logfile: '',
+            stdout_logfile: '',
+            stop: 1412099659
+        };
+
+        var process = ProcessInstanceFactory(data);
+        expect(process.name).toBe('verifysetup/0');
+        expect(process.group).toBe('verifysetup');
+        expect(process.statename).toBe('STOPPED');
+        expect(process.description).toBe('Sep 30 02:54 PM');
+        expect(process._data).toBe(data);
+    });
+
 });
