@@ -1,6 +1,6 @@
 (function (){
 
-    var authmodule = angular.module("serverModule", []);
+    var authmodule = angular.module("serverModule", ["ProcessModel"]);
 
     authmodule.controller("ServersController", function(ServerService, ProcessService, $scope, ProcessInstance){
 
