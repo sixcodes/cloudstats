@@ -2,7 +2,7 @@
 
     var authmodule = angular.module("authModule", []);
 
-    authmodule.controller("AuthController", ['$location', 'TokenService', '$cookieStore', function($location, TokenService, $cookieStore){
+    authmodule.controller("AuthController", function($location, TokenService, $cookieStore){
 
             var ctrl = this;
 
@@ -18,5 +18,5 @@
                         $location.path("/");
                     });
             };
-    }]);
+    });
 })();

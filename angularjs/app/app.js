@@ -1,6 +1,6 @@
 (function (){
 
-    var app = angular.module("cloudstats", ["ngRoute", "ngResource", "authModule", "serverModule", "TokenModule", "ServerModule", "ngCookies"]);
+    var app = angular.module("cloudstats", ["ngRoute", "ngResource", "authModule", "serverModule", "ProcessModule", "TokenModule", "ServerModule", "ngCookies"]);
 
     app.config(function($routeProvider){
         $routeProvider
@@ -28,14 +28,10 @@
         return sessionInjector;
     }]);
 
-    app.factory("ProcessFactory", function(){
+    app.factory("ProcessInstance", function(){
         return function(process_data){
                 return {
                     _data: process_data,
-                    running: function(){
-                        return this._data.statename === 'RUNNING';
-                    },
-
                     name: process_data.name,
                     group: process_data.group,
                     description: process_data.description,
