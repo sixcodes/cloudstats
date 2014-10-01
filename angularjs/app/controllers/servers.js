@@ -6,11 +6,11 @@
 
         var ctrl = this;
         $scope.server_processes = {};
-        $scope.ProcessService = ProcessService;
         ServerService.query(function(data){
             $scope.servers = data.results;
-        }, function (data) {
-
+            angular.forEach($scope.servers, function(server){
+                ctrl.all_processes(server);
+            });
         });
 
         this.start = function(server, proc_data){
@@ -26,7 +26,7 @@
         };
 
         this.all_processes = function(server){
-            ProcessService.resource.all({serverId: server.id}, function(data){
+            ProcessService.all(server).$promise.then(function(data){
                 $scope.server_processes[server.id] = {};
                 angular.forEach(data, function(item){
                     var proc = ProcessInstance(item);
