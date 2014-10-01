@@ -22,14 +22,12 @@ module.exports = function(grunt) {
                 src: [
                     'app/controllers/*.js',
                     'app/services/*.js',
-                    'app/models/*.js',
                     'app/app.js'
                 ],
                 options: {
                     specs: [
                         'test/controllers/*.js',
                         'test/services/*.js',
-                        'test/models/*.js',
                         'test/app.js'
                     ],
                     helpers: [
