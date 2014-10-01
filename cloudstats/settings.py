@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'api',
     'rest_framework',
     'rest_framework.authtoken',
+    'raven.contrib.django.raven_compat',
 
 )
 
@@ -54,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',
 )
 
 ROOT_URLCONF = 'cloudstats.urls'
@@ -109,6 +111,8 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
+
+SENTRY_DSN = 'http://de94fa8c9ba547598c926e6575e39a25:8a3f2bd799344f3e8b73c1a6b76e9214@logs.sieve.com.br/34'
 
 try:
     from settings_local import *

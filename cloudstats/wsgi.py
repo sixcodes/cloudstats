@@ -15,5 +15,7 @@ pymysql.install_as_MySQLdb()
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cloudstats.settings")
 
+from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
+
 from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
+application = Sentry(get_wsgi_application())
