@@ -13,15 +13,15 @@
             });
         });
 
-        this.start = function(server, proc_data){
-            ProcessService.start(server, proc_data, function(data){
-                angular.copy(data, proc_data);
+        this.start = function(server, process){
+            ProcessService.start(server, process, function(data){
+                angular.copy(data, process);
             });
         };
 
-        this.stop = function(server, proc_data){
-            ProcessService.stop(server, proc_data, function(data){
-                angular.copy(data, proc_data);
+        this.stop = function(server, process){
+            ProcessService.stop(server, process, function(data){
+                angular.copy(data, process);
             });
         };
 
@@ -38,7 +38,6 @@
         this.is_running = function(statename){
             return (statename === 'RUNNING');
         };
-
     });
 
 })();
