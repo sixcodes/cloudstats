@@ -53,7 +53,7 @@ class ServerProcessView(NestedViewSetMixin,
                         generics.RetrieveAPIView,
                         viewsets.GenericViewSet):
     """
-    Manage all processes fo a given server
+    Manage all processes of a given server
     """
 
     permission_classes = (permissions.IsAuthenticated,)
