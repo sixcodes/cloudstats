@@ -6,8 +6,6 @@ from rest_framework import routers
 from rest_framework_extensions.routers import ExtendedDefaultRouter
 
 router = ExtendedDefaultRouter(trailing_slash=False)
-router.register(r"users", views.UserViewSet)
-
 router.register(r"servers", views.ServerView)\
       .register(r"processes", views.ServerProcessView, base_name="server-processes", parents_query_lookups=['server'])
 

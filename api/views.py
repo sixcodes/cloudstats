@@ -1,7 +1,6 @@
 import os
 from xmlrpclib import ServerProxy
 
-from django.contrib.auth.models import User
 from django.core.cache import cache
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
@@ -9,7 +8,7 @@ from rest_framework import status, mixins, generics
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from api.models import Server, Stats, ServerProcess
-from api.serializers import UserSerializer, ServerSerializer, StatsSerializer
+from api.serializers import ServerSerializer, StatsSerializer
 
 
 def _get_client_ip_address(request):
@@ -23,12 +22,6 @@ def _get_xml_server_proxy(ipaddress):
         ipaddress=ipaddress,
         port=os.environ['CLOUDSTATS_SUPERVISORD_PORT'])
     )
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
 
 
 class ServerView(NestedViewSetMixin,

@@ -35,7 +35,6 @@ class ServerProcess(models.Model):
 
 class Stats(models.Model):
 
-    server = models.ForeignKey(Server)
     mem = models.DecimalField(decimal_places=2, max_digits=5)
     load = models.DecimalField(decimal_places=2, max_digits=5)
     swap = models.DecimalField(decimal_places=2, max_digits=5)
