@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'raven.contrib.django.raven_compat',
+    'rest_framework_swagger',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -112,6 +113,20 @@ CACHES = {
 }
 
 SENTRY_DSN = 'http://de94fa8c9ba547598c926e6575e39a25:8a3f2bd799344f3e8b73c1a6b76e9214@logs.sieve.com.br/34'
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [], # List URL namespaces to ignore
+    "api_version": '0.1',  # Specify your API's version
+    "api_path": "",  # Specify the path to your API not a root level
+    "enabled_methods": [  # Specify which methods to enable in Swagger UI
+        'get',
+        'post',
+    ],
+    "api_key": '', # An API key
+    "is_authenticated": False,  # Set to True to enforce user authentication,
+    "is_superuser": False,  # Set to True to enforce admin only access
+}
+
 
 try:
     from settings_local import *

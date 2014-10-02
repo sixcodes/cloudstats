@@ -104,6 +104,9 @@ class ServerProcessView(NestedViewSetMixin,
 
 
 class StatsView(viewsets.ModelViewSet):
+    """
+    Post new values for stats: mem, load, disk space, etc
+    """
     queryset = Stats.objects.all()
     serializer_class = StatsSerializer
     permission_classes = (permissions.IsAuthenticated,)

@@ -18,5 +18,6 @@ urlpatterns = patterns('',
     url(r'^$', 'angularjs.views.index'),
     url(r'^api-login', 'rest_framework.authtoken.views.obtain_auth_token', name='get-token'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^docs/', include('rest_framework_swagger.urls')),
     url(r'^api/', include(router.urls)),
 )
