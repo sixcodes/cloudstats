@@ -25,6 +25,14 @@
             });
         };
 
+        this.restart = function(server, process){
+            ProcessService.restart(server, process, function(data){
+                angular.copy(data, process);
+            });
+        };
+
+
+
         this.all_processes = function(server){
             ProcessService.all(server).$promise.then(function(data){
                 $scope.server_processes[server.id] = {};
