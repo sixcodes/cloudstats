@@ -36,6 +36,12 @@ class ServerView(NestedViewSetMixin,
                  mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
                  viewsets.GenericViewSet):
+
+    """
+    Manage basic information about a server.
+    Also used to register a new server
+    """
+
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServerSerializer
     queryset = Server.objects.all()
@@ -53,6 +59,9 @@ class ServerProcessView(NestedViewSetMixin,
                         generics.ListAPIView,
                         generics.RetrieveAPIView,
                         viewsets.GenericViewSet):
+    """
+    Manage all processes fo a given server
+    """
 
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServerSerializer
