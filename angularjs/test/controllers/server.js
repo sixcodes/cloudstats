@@ -31,9 +31,12 @@ describe("Server Controller", function() {
 
     it("should get server infos", function() {
         httpbackend.expectGET("/api/servers").respond({results: [
-            {name: "s1", ipaddress: "127.0.0.1"},
-            {name: "s2", ipaddress: "8.8.8.8"}
+            {id: 1, name: "s1", ipaddress: "127.0.0.1"},
+            {id: 2, name: "s2", ipaddress: "8.8.8.8"}
         ]});
+
+        httpbackend.expectGET("/api/servers/1/processes").respond(200, []);
+        httpbackend.expectGET("/api/servers/2/processes").respond(200, []);
 
         var controller = makeController();
         httpbackend.flush();
