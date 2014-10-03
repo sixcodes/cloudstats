@@ -34,7 +34,7 @@
 
 
         this.all_processes = function(server){
-            ProcessService.all(server, function(data){
+            ProcessService.all(server).$promise.then(function(data){
                 $scope.server_processes[server.id] = {};
                 angular.forEach(data, function(item){
                     var proc = ProcessInstance(item);
