@@ -1,10 +1,9 @@
 from django.contrib import admin
 from django.conf.urls import patterns, include, url
+from rest_framework_extensions.routers import ExtendedDefaultRouter
+
 from api import views
 
-from rest_framework import routers
-from rest_framework_extensions.routers import ExtendedDefaultRouter
-import social_auth
 
 router = ExtendedDefaultRouter(trailing_slash=False)
 router.register(r"servers", views.ServerView)\
