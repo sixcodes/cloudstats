@@ -105,8 +105,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/collect")
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     )
 }
 
