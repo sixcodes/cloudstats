@@ -4,6 +4,7 @@ from api import views
 
 from rest_framework import routers
 from rest_framework_extensions.routers import ExtendedDefaultRouter
+import social_auth
 
 router = ExtendedDefaultRouter(trailing_slash=False)
 router.register(r"servers", views.ServerView)\
@@ -13,6 +14,7 @@ router.register(r"stats", views.StatsView)
 
 
 urlpatterns = patterns('',
+    url(r'^social/', include(social_auth.urls)),
     url(r'^$', 'angularjs.views.index'),
     url(r'^api-login', 'rest_framework.authtoken.views.obtain_auth_token', name='get-token'),
     url(r'^admin/', include(admin.site.urls)),
