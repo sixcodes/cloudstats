@@ -44,7 +44,7 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'raven.contrib.django.raven_compat',
     'rest_framework_swagger',
-    'social_auth',
+    'social.apps.django_app.default',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -64,7 +64,7 @@ ROOT_URLCONF = 'cloudstats.urls'
 WSGI_APPLICATION = 'cloudstats.wsgi.application'
 
 AUTHENTICATION_BACKENDS = (
-    'social_auth.backends.google.GoogleOAuth',
+    'social.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
