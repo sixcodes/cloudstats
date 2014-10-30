@@ -13,6 +13,12 @@
               templateUrl: '/static/collect/partials/servers.html',
               controller: 'ServersController',
               controllerAs: 'serverCtrl'
+            })
+            .when("/auth", {
+              templateUrl: '/static/collect/partials/servers.html',
+              controller: 'AuthController',
+              controllerAs: 'authCtrl'
+
             });
     });
 

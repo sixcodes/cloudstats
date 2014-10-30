@@ -6,17 +6,13 @@
 
             var ctrl = this;
 
-            this.login = function(){
-                TokenService.get_token(null, {username: this.username, password: this.password},
-                    function(data){
-                        ctrl.login_failed = false;
-                        $location.path("/servers");
-                        $cookieStore.put("auth_token", data.token);
-                    },
-                    function(data){
-                        ctrl.login_failed = true;
-                        $location.path("/");
-                    });
-            };
-    });
+            TokenService.get_token(
+                function(data){
+                    $location.path("/servers");
+                    $cookieStore.put("auth_token", data.token);
+                },
+                function(data){
+                    $location.path("/");
+            });
+});
 })();
