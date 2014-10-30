@@ -17,10 +17,10 @@ describe("Token Service", function(){
         httpBackend.verifyNoOutstandingRequest();
     });
 
-    it("get_token() should POST to /api-login/", function(){
+    it("get_token() should GET to /token", function(){
         var data = {username: "teste", password: "secret"};
-        httpBackend.expectPOST("/api-login", data).respond(200, {});
-        service.get_token(data);
+        httpBackend.expectGET("/token").respond(200, {});
+        service.get_token();
         httpBackend.flush();
     });
 
