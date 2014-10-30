@@ -14,7 +14,7 @@ router.register(r"stats", views.StatsView)
 
 
 urlpatterns = patterns('',
-    url(r'^social/', include(social_auth.urls)),
+    url(r'^social/', include('social_auth.urls')),
     url(r'^$', 'angularjs.views.index'),
     url(r'^api-login', 'rest_framework.authtoken.views.obtain_auth_token', name='get-token'),
     url(r'^admin/', include(admin.site.urls)),
