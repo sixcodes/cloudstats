@@ -6,7 +6,7 @@ describe("Auth Controller", function() {
         module("cloudstats");
     });
 
-    var crtl, scope, httpbackend, rootScope, cookieStore;
+    var crtl, scope, httpbackend, rootScope, cookieStore, create_controller, location;
     beforeEach(inject(function($injector){
         var $controller = $injector.get("$controller");
 
@@ -14,13 +14,17 @@ describe("Auth Controller", function() {
         scope = rootScope.$new();
         httpbackend = $injector.get("$httpBackend");
         cookieStore = $injector.get("$cookieStore");
+        location = $injector.get("$location");
 
-        crtl = $controller("AuthController", {
-            $scope: scope,
-            $location: $injector.get("$location"),
-            TokenService: $injector.get("TokenService"),
-            $cookieStore: cookieStore
-        });
+        create_controller = function (){
+            return $controller("AuthController", {
+                $scope: scope,
+                $location: $injector.get("$location"),
+                TokenService: $injector.get("TokenService"),
+                $cookieStore: cookieStore
+            });
+        }
+
     }));
 
     afterEach(function(){
@@ -30,29 +34,23 @@ describe("Auth Controller", function() {
 
 
     it("should get a valid token", function() {
-        var data = {username: "teste", password: "secret"};
-        httpbackend.whenPOST("/api-login", data).respond({token: "abdf364ad"});
+        httpbackend.whenGET("/token").respond({token: "abdf364ad"});
 
-        crtl.username = data["username"];
-        crtl.password = data["password"];
-
-        expect(crtl.login_failed).toBeUndefined();
-        crtl.login();
+        crtl = create_controller();
         httpbackend.flush();
-        expect(crtl.login_failed).toBe(false);
         expect(cookieStore.get("auth_token")).toEqual("abdf364ad");
+        expect(location.path()).toEqual("/servers");
 
     });
 
     it("should deny token for invalid credentials", function(){
-        httpbackend.whenPOST("/api-login").respond(400, {token: "abdf364ad"});
+        httpbackend.whenGET("/token").respond(400, {});
 
-        expect(crtl.login_failed).toBeUndefined();
-        crtl.login();
+        crtl = create_controller();
         httpbackend.flush();
-        expect(crtl.login_failed).toBe(true);
         expect(crtl.token).toBeUndefined();
         expect(cookieStore.get("auth_token")).toBeUndefined();
+        expect(location.path()).toEqual("/");
 
     });
 });

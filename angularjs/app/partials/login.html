@@ -2,11 +2,7 @@
 
     <form name="authForm" ng-submit="auth.login()"  novalidate>
 
-        <input type="text" ng-model="auth.username" required>
-        <input type="password" ng-model="auth.password" required>
-
-        <input type="submit" name="login">
-        <h2 ng-show="auth.login_failed">Falha no Login</h2>
+        <a ng-href="/social/login/google-oauth2/"> Login </a>
 
     </form>
 

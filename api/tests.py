@@ -11,7 +11,6 @@ from django.core.cache import cache
 from api.models import Server, User, Token
 import api.views
 
-
 class ServerAPITest(TestCase):
 
     def setUp(self):
@@ -24,6 +23,13 @@ class ServerAPITest(TestCase):
             "supervisord_port": 9000,
             "supervisord_pwd": "sievera",
         }
+
+    def exchange_sessionid_for_auth_token(self):
+        self.assertTrue(self.client.login(username="testuser", password="secret"))
+
+        response = self.client.get("/token", Accept='application/json;')
+        self.assertEqual(self.token.key, json.loads(response.content)['token'])
+
 
     def test_create_new_server(self):
         response = self.client.post(reverse('server-list'), content_type='application/json', data=json.dumps(self.server_data), HTTP_AUTHORIZATION="Token {}".format(self.token.key))
