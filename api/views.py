@@ -35,9 +35,12 @@ class ServerView(NestedViewSetMixin,
     Also used to register a new server
     """
 
+
+
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServerSerializer
     queryset = Server.objects.all()
+    paginate_by = 150
 
     def create(self, request, *args, **kwargs):
         remote_addr = _get_client_ip_address(request)
