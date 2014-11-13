@@ -39,3 +39,11 @@ class Stats(models.Model):
     load = models.DecimalField(decimal_places=2, max_digits=5)
     swap = models.DecimalField(decimal_places=2, max_digits=5)
     uptime = models.BigIntegerField()
+
+
+class Permission(models.Model):
+
+    name = models.CharField(max_length=128, null=False, blank=False)
+    server = models.ForeignKey(Server, null=False, blank=False, related_name='permissions')
+    process_name = models.CharField(max_length=256, null=True, blank=True)
+    user = models.ForeignKey(User, null=False, blank=False)

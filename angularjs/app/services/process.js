@@ -43,7 +43,8 @@
                     name: process_data.name,
                     group: process_data.group,
                     description: process_data.description,
-                    statename : process_data.statename
+                    statename : process_data.statename,
+                    can_interact: process_data.can_interact
                 };
         };
     });

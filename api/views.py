@@ -2,12 +2,13 @@ import os
 from xmlrpclib import ServerProxy
 
 from django.core.cache import cache
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status, mixins, generics
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from api.models import Server, Stats, ServerProcess
+from api.models import Server, Stats, ServerProcess, Permission
+from api import permissions
 from api.serializers import ServerSerializer, StatsSerializer
 
 
@@ -24,6 +25,32 @@ def _get_xml_server_proxy(ipaddress):
     )
 
 
+def _apply_process_permissions(data, server, user):
+    _data = data
+    if not isinstance(_data, list):
+        _data = [_data]
+    for process in _data:
+        permission_exists = Permission.objects.all().filter(user=user,
+                                                            name=permissions.CanInteractWithProcessPermission.name,
+                                                            server=server, process_name=_get_full_process_name(process, process['name']))\
+            .exists()
+        if user.is_superuser or  permission_exists:
+            process['can_interact'] = True
+    return data
+
+
+def _get_full_process_name(data, pname):
+    process_name = pname.replace("-", "/")
+    group = data.get("group")
+    if group:
+        full_process_name = "{}:{}".format(group, process_name)
+    else:
+        full_process_name = process_name
+
+    return full_process_name
+
+
+
 class ServerView(NestedViewSetMixin,
                  mixins.CreateModelMixin,
                  mixins.ListModelMixin,
@@ -35,12 +62,14 @@ class ServerView(NestedViewSetMixin,
     Also used to register a new server
     """
 
-
-
-    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServerSerializer
     queryset = Server.objects.all()
     paginate_by = 100
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return self.queryset
+        return self.queryset.filter(permissions__user=self.request.user.id, permissions__name=permissions.ServerReadPermission.name)
 
     def create(self, request, *args, **kwargs):
         remote_addr = _get_client_ip_address(request)
@@ -59,7 +88,6 @@ class ServerProcessView(NestedViewSetMixin,
     Manage all processes of a given server
     """
 
-    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServerSerializer
     queryset = ServerProcess.objects.all()
 
@@ -68,6 +96,8 @@ class ServerProcessView(NestedViewSetMixin,
         server = Server.objects.get(id=server_id)
         xmlrpc = _get_xml_server_proxy(server.ipaddress)
         data = xmlrpc.supervisor.getAllProcessInfo()
+
+        data = _apply_process_permissions(data, server, request.user)
         try:
             return Response(data=data)
         except Exception as e:
@@ -79,7 +109,7 @@ class ServerProcessView(NestedViewSetMixin,
 
         xmlrpc = _get_xml_server_proxy(server.ipaddress)
 
-        process_name = self._get_full_process_name(request.DATA, kwargs['pk'])
+        process_name = _get_full_process_name(request.DATA, kwargs['pk'])
         action = request.DATA.get("action")
 
         resp = {}
@@ -95,17 +125,9 @@ class ServerProcessView(NestedViewSetMixin,
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         resp = xmlrpc.supervisor.getProcessInfo(process_name)
+        resp = _apply_process_permissions(resp, server, request.user)
         return Response(status=202, data=resp)
 
-    def _get_full_process_name(self, reques_data, pname):
-        process_name = pname.replace("-", "/")
-        group = reques_data.get("group")
-        if group:
-            full_process_name = "{}:{}".format(group, process_name)
-        else:
-            full_process_name = process_name
-
-        return full_process_name
 
 
 class StatsView(viewsets.ModelViewSet):
@@ -114,7 +136,6 @@ class StatsView(viewsets.ModelViewSet):
     """
     queryset = Stats.objects.all()
     serializer_class = StatsSerializer
-    permission_classes = (permissions.IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         ip_address = _get_client_ip_address(request)
