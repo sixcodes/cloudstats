@@ -26,10 +26,10 @@ def _get_xml_server_proxy(ipaddress):
 
 
 def _apply_process_permissions(data, server, user):
-    _data = data
-    if not isinstance(_data, list):
-        _data = [_data]
-    for process in _data:
+    data_ = data
+    if not isinstance(data_, list):
+        data_ = [data_]
+    for process in data_:
         permission_exists = Permission.objects.all().filter(user=user,
                                                             name=permissions.CanInteractWithProcessPermission.name,
                                                             server=server, process_name=_get_full_process_name(process, process['name']))\
