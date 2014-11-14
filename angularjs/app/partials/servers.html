@@ -13,9 +13,11 @@
                 <h3>Processos</h3>
                 <div ng-repeat="(p_name, p) in server_processes[s.id]">
                         {{ p.group }}:{{ p.name }} ({{ p.description }})
-                        <a ng-href="" ng-click="serverCtrl.start(s, p)" ng-show="!serverCtrl.is_running(p.statename)" >| start</a>
-                        <a ng-href="" ng-click="serverCtrl.stop(s, p)" ng-show="serverCtrl.is_running(p.statename)">| stop</a>
-                        <a ng-href="" ng-click="serverCtrl.restart(s, p)" ng-show="serverCtrl.is_running(p.statename)">| restart</a>
+                        <span ng-show="serverCtrl.can_interact_with_process(p)">
+                            <a ng-href="" ng-click="serverCtrl.start(s, p)" ng-show="!serverCtrl.is_running(p.statename)" >| start</a>
+                            <a ng-href="" ng-click="serverCtrl.stop(s, p)" ng-show="serverCtrl.is_running(p.statename)">| stop</a>
+                            <a ng-href="" ng-click="serverCtrl.restart(s, p)" ng-show="serverCtrl.is_running(p.statename)">| restart</a>
+                        </span>
                 </div>
 
             </div>

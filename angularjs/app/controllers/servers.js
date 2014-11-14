@@ -46,6 +46,10 @@
         this.is_running = function(statename){
             return (statename === 'RUNNING');
         };
+
+        this.can_interact_with_process = function(process){
+            return process.can_interact;
+        };
     });
 
 })();

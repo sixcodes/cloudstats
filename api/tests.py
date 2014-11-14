@@ -8,8 +8,9 @@ from django.test import TestCase, client
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 
-from api.models import Server, User, Token
+from api.models import Server, User, Token, Permission
 import api.views
+import api.permissions
 
 class ServerAPITest(TestCase):
 
@@ -81,6 +82,10 @@ class ServerAPITest(TestCase):
         }
         server = Server(name="server", ipaddress="127.0.0.1")
         server.save()
+
+        permission = Permission(name=api.permissions.ServerReadPermission.name, user=self.u, server=server)
+        permission.save()
+
 
         cache_key = "stats-{}-{}".format(server.id, server.ipaddress)
         cache.set(cache_key, stats_data)
@@ -188,7 +193,7 @@ class ServerProcessTest(TestCase):
         server_proxy_instance_mock = mock.Mock()
         with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
 
-            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {}
+            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {"name": "etl0/0"}
 
             resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
                                         content_type='application/json',
@@ -213,7 +218,7 @@ class ServerProcessTest(TestCase):
         }
         server_proxy_instance_mock = mock.Mock()
         with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
-            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {}
+            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {"name": "etl0/0"}
             resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
                                         content_type='application/json',
                                         HTTP_AUTHORIZATION="Token {}".format(self.token.key))
@@ -236,7 +241,7 @@ class ServerProcessTest(TestCase):
 
         server_proxy_instance_mock = mock.Mock()
         with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
-            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {}
+            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {"name": "etl0/0"}
             resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
                                         content_type='application/json',
                                         HTTP_AUTHORIZATION="Token {}".format(self.token.key))
@@ -259,7 +264,7 @@ class ServerProcessTest(TestCase):
 
         server_proxy_instance_mock = mock.Mock()
         with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
-            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {}
+            server_proxy_instance_mock.supervisor.getProcessInfo.return_value = {"name": "etl0/0"}
             resposnse = self.client.post(reverse("server-processes-detail", args=(self.s.id, "etl0-0")), data=json.dumps(payload),
                                         content_type='application/json',
                                         HTTP_AUTHORIZATION="Token {}".format(self.token.key))
@@ -271,4 +276,4 @@ class ServerProcessTest(TestCase):
         }
 
         ps = api.views.ServerProcessView()
-        self.assertEqual("etl0/0", ps._get_full_process_name(request_data, "etl0-0"))
+        self.assertEqual("etl0/0", api.views._get_full_process_name(request_data, "etl0-0"))
