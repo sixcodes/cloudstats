@@ -14,6 +14,11 @@
               controller: 'ServersController',
               controllerAs: 'serverCtrl'
             })
+            .when("/servers/:id", {
+              templateUrl: '/static/collect/partials/processes.html',
+              controller: 'ProcessesController',
+              controllerAs: 'processesCtrl'
+            })
             .when("/auth", {
               templateUrl: '/static/collect/partials/servers.html',
               controller: 'AuthController',

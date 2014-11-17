@@ -2,7 +2,7 @@
 
     var authmodule = angular.module("serverModule", []);
 
-    authmodule.controller("ServersController", function(ServerService, ProcessService, $scope, ProcessInstance){
+    authmodule.controller("ServersController", function(ServerService, ProcessService, $scope, ProcessInstance, $location){
 
         var ctrl = this;
         $scope.server_processes = {};
@@ -31,8 +31,6 @@
             });
         };
 
-
-
         this.all_processes = function(server){
             ProcessService.all(server).$promise.then(function(data){
                 $scope.server_processes[server.id] = {};
@@ -41,6 +39,10 @@
                     $scope.server_processes[server.id][proc.name] = proc;
                 });
             });
+        };
+
+        this.get_detail = function(server){
+            $location.path("/server/" + server.id);
         };
 
         this.is_running = function(statename){
