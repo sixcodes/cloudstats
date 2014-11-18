@@ -28,8 +28,8 @@
             });
         };
 
-        this.is_running = function(statename){
-            return (statename === 'RUNNING');
+        this.is_running = function(process){
+            return (process['statename'] === 'RUNNING');
         };
 
         this.can_interact_with_process = function(process){

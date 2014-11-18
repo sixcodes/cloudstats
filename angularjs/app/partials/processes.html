@@ -29,7 +29,8 @@
 									{{process.name}}
 									<span>{{process.description}}</span>
                                     <span ng-show="processesCtrl.can_interact_with_process(process)">
-                                        <i class="icon-play"></i><i class="icon-stop"></i>
+                                        <i class="icon-play" ng-show="!processesCtrl.is_running(process)" ng-click="processesCtrl.start(server, process)"></i>
+                                        <i class="icon-stop" ng-show="processesCtrl.is_running(process)" ng-click="processesCtrl.stop(server, process)"></i>
                                     </span>
 								</li>
 							</ul>
