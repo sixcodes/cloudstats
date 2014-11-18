@@ -20,7 +20,7 @@
 					<div class="col-xs-12">
 						<article ng-repeat="s in servers" title="Selecione para verificar este servidor." ng-click="serverCtrl.get_detail(s)">
 							<header>
-								<h3><a ng-href="http://{{ s.ipaddress }}:9000/"> {{ s.name }} </a></h3>
+								<h3>{{ s.name }}</h3>
 							</header>
 							<ul>
                                 <li ng-repeat="(stat_name, stat_value) in s.stats"> {{ stat_name }} <span>{{ stat_value }}</span> </li>

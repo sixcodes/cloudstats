@@ -1,6 +1,6 @@
 (function (){
 
-    var app = angular.module("cloudstats", ["ngRoute", "ngResource", "authModule", "serverModule", "ProcessModule", "TokenModule", "ServerModule", "ngCookies"]);
+    var app = angular.module("cloudstats", ["ngRoute", "ngResource", "authModule", "serverModule", "ProcessModule", "TokenModule", "ServerModule", "ProcessesModule", "ngCookies"]);
 
     app.config(function($routeProvider){
         $routeProvider
@@ -14,7 +14,7 @@
               controller: 'ServersController',
               controllerAs: 'serverCtrl'
             })
-            .when("/servers/:id", {
+            .when("/servers/:id/processes", {
               templateUrl: '/static/collect/partials/processes.html',
               controller: 'ProcessesController',
               controllerAs: 'processesCtrl'
