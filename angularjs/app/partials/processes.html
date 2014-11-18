@@ -18,37 +18,17 @@
 				</section>
 				<section class="row widgets process">
 					<div class="col-xs-12">
-						<article class="js_show_processes" ng-repeat="p in processes">
-							<header>
-								<h3>{{p.group}}:{{p.name}}</h3>
+						<article class="js_show_processes" ng-repeat="(g_name, g_processes) in processes['by_group']">
+							<header ng-click="processesCtrl.toggle_showprocess(g_name)">
 								<i class="icon-angle-down"></i>
-								<span><b>34</b> / 34</span>								
+								<h3>{{g_name}}</h3>
+								<span>{{g_process.length}}</span>
 							</header>
-							<ul>
-								<li>
-									<i class="icon-play"></i>
-									crawler:et0/0
-									<span>pid15846, uptime 0:48:35, STOPPED</span>
-								</li>
-								<li>
-									<i class="icon-play"></i>
-									crawler:et0/0
-									<span>pid15846, uptime 0:48:35, STOPPED</span>
-								</li>
-								<li>
-									<i class="icon-stop"></i>
-									crawler:et0/0
-									<span>pid15846, uptime 0:48:35, STOPPED</span>
-								</li>
-								<li>
-									<i class="icon-stop"></i>
-									crawler:et0/0
-									<span>pid15846, uptime 0:48:35, STOPPED</span>
-								</li>
-								<li>
-									<i class="icon-play"></i>
-									crawler:et0/0
-									<span>pid15846, uptime 0:48:35, STOPPED</span>
+							<ul ng-show="processesCtrl.should_show(g_name)">
+								<li ng-repeat="process in g_processes">
+									{{process.name}}
+									<span>{{process.description}}</span>
+									<i class="icon-play"></i><i class="icon-stop"></i>
 								</li>
 							</ul>
 						</article>

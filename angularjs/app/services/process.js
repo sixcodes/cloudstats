@@ -11,7 +11,7 @@
 
             resource: $resource("/api/servers/:serverId/processes/:procName", {serverId: '@serverId', procName: '@procName'},
             {
-                all: {method: 'GET', isArray: true},
+                all: {method: 'GET', isArray: false},
                 post: {method: 'POST'},
                 start: {method: 'POST'},
                 stop: {method: 'POST'},

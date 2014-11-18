@@ -91,13 +91,23 @@ class ServerProcessView(NestedViewSetMixin,
     serializer_class = ServerSerializer
     queryset = ServerProcess.objects.all()
 
+    def _processes_by_group(self, data):
+        groups_ = {}
+        for process in data:
+            groups_.setdefault(process['group'], list()).append(process)
+        return groups_
+
     def list(self, request, *args, **kwargs):
         server_id = kwargs['parent_lookup_server']
         server = Server.objects.get(id=server_id)
         xmlrpc = _get_xml_server_proxy(server.ipaddress)
         data = xmlrpc.supervisor.getAllProcessInfo()
 
-        data = _apply_process_permissions(data, server, request.user)
+        filtered_data = _apply_process_permissions(data, server, request.user)
+        data = {
+            'processes': filtered_data,
+            'by_group': self._processes_by_group(filtered_data)
+        }
         try:
             return Response(data=data)
         except Exception as e:

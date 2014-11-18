@@ -81,7 +81,7 @@ describe("Process Service", function(){
     });
 
     it("Should call all() with the correct data", function(){
-        httpbackend.expectGET("/api/servers/1/processes").respond(200, []);
+        httpbackend.expectGET("/api/servers/1/processes").respond(200, {});
         var resp = ProcessService.all(server);
         httpbackend.flush();
 

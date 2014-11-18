@@ -246,7 +246,7 @@ a {color:#46732B;}
 		color:#74b74b;
 	}
 	.process ul {
-		display:none;
+		/*display:none;*/
 		position:absolute;
 		width:100%;
 		z-index:3;

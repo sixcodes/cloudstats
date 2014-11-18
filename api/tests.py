@@ -158,11 +158,10 @@ class ServerProcessTest(TestCase):
     def test_list_all_server_processes(self):
         server_id = self.s.id
 
-        process_list_info = [{'description': 'pid 9437, uptime 1:10:11', 'exitstatus': 0, 'group': 'reprice',
-                              'name': 'reprice_worker', 'pid': 9437, 'statename': 'RUNNING'},
-                             {'description': 'pid 2345, uptime 1:10:11', 'exitstatus': 0, 'group': 'etl', 'name': 'etl',
-                              'pid': 2345, 'statename': 'RUNNING'},
-                             ]
+        process_list_info = [
+               {'description': 'pid 9437, uptime 1:10:11', 'exitstatus': 0, 'group': 'reprice', 'name': 'reprice_worker', 'pid': 9437, 'statename': 'RUNNING'},
+               {'description': 'pid 2345, uptime 1:10:11', 'exitstatus': 0, 'group': 'etl', 'name': 'etl', 'pid': 2345, 'statename': 'RUNNING'},
+        ]
 
         server_proxy_instance_mock = mock.Mock()
         with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
@@ -176,7 +175,56 @@ class ServerProcessTest(TestCase):
 
             self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
             self.assertEqual([mock.call()], server_proxy_instance_mock.supervisor.getAllProcessInfo.call_args_list)
-            self.assertListEqual(process_list_info, json.loads(resposnse.content))
+            self.assertListEqual(process_list_info, json.loads(resposnse.content)['processes'])
+
+    def test_list_all_server_process_grouped(self):
+        """
+        Veifica que a chave "by_group" foi adicionada à resposta
+        :return:
+        """
+        server_id = self.s.id
+
+        process_list_info = [
+            {'description': 'pid 9437, uptime 1:10:11', 'exitstatus': 0, 'group': 'reprice', 'name': 'reprice_worker/1', 'pid': 9437, 'statename': 'RUNNING'},
+            {'description': 'pid 9437, uptime 1:10:11', 'exitstatus': 0, 'group': 'reprice', 'name': 'reprice_worker/2', 'pid': 9437, 'statename': 'RUNNING'},
+            {'description': 'pid 2345, uptime 1:10:11', 'exitstatus': 0, 'group': 'etl', 'name': 'etl/0', 'pid': 2345, 'statename': 'RUNNING'},
+            {'description': 'pid 2345, uptime 1:10:11', 'exitstatus': 0, 'group': 'etl', 'name': 'etl/1', 'pid': 2345, 'statename': 'RUNNING'},
+            {'description': 'pid 2345, uptime 1:10:11', 'exitstatus': 0, 'group': 'cloudstatsd', 'name': 'cloudstatsd', 'pid': 2345, 'statename': 'RUNNING'},
+        ]
+
+        returned_process_info = {
+            'processes': process_list_info,
+            'by_group': {
+                "reprice": [
+                    {'description': 'pid 9437, uptime 1:10:11', 'exitstatus': 0, 'group': 'reprice', 'name': 'reprice_worker/1', 'pid': 9437, 'statename': 'RUNNING'},
+                    {'description': 'pid 9437, uptime 1:10:11', 'exitstatus': 0, 'group': 'reprice', 'name': 'reprice_worker/2', 'pid': 9437, 'statename': 'RUNNING'},
+                ],
+                "etl": [
+                    {'description': 'pid 2345, uptime 1:10:11', 'exitstatus': 0, 'group': 'etl', 'name': 'etl/0', 'pid': 2345, 'statename': 'RUNNING'},
+                    {'description': 'pid 2345, uptime 1:10:11', 'exitstatus': 0, 'group': 'etl', 'name': 'etl/1', 'pid': 2345, 'statename': 'RUNNING'},
+                ],
+                "cloudstatsd": [
+                    {'description': 'pid 2345, uptime 1:10:11', 'exitstatus': 0, 'group': 'cloudstatsd', 'name': 'cloudstatsd', 'pid': 2345, 'statename': 'RUNNING'},
+                ],
+            },
+        }
+
+
+        server_proxy_instance_mock = mock.Mock()
+        with mock.patch.object(api.views, "ServerProxy", return_value=server_proxy_instance_mock) as serverProxy_mock:
+
+            server_proxy_instance_mock.supervisor.getAllProcessInfo.return_value = process_list_info
+
+            resposnse = self.client.get(reverse("server-processes-list", args=(server_id,)),
+                                        content_type='application/json',
+                                        HTTP_AUTHORIZATION="Token {}".format(self.token.key))
+            self.assertEqual(200, resposnse.status_code)
+
+            self.assertEqual([mock.call("http://sieve:pwd@127.0.0.1:9000/RPC2")], serverProxy_mock.call_args_list)
+            self.assertEqual([mock.call()], server_proxy_instance_mock.supervisor.getAllProcessInfo.call_args_list)
+            self.assertDictEqual(returned_process_info, json.loads(resposnse.content))
+
+
 
     def test_check_calling_right_action_start(self):
         """
