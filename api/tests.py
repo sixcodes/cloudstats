@@ -75,10 +75,10 @@ class ServerAPITest(TestCase):
 
     def test_retrieve_server_with_stats(self):
         stats_data = {
-            "load": 80.2,
-            "mem": 60.3,
-            "swap": 10.2,
-            "uptime": 10000,
+            u"load": 80.2,
+            u"mem": 60.3,
+            u"swap": 10.2,
+            u"uptime": 10000,
         }
         server = Server(name="server", ipaddress="127.0.0.1")
         server.save()

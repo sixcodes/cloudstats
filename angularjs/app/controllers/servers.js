@@ -8,9 +8,6 @@
         $scope.server_processes = {};
         ServerService.query(function(data){
             $scope.servers = data.results;
-            angular.forEach($scope.servers, function(server){
-                ctrl.all_processes(server);
-            });
         });
 
         this.start = function(server, process){

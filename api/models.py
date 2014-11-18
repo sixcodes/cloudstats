@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.views.decorators.cache import cache_control
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -20,7 +21,13 @@ class Server(models.Model):
     supervisord_pwd = models.CharField(max_length=32, null=True, blank=True)
 
     def fetch_stats(self):
-        return cache.get(self._get_stats_key())
+        cache_ = cache.get(self._get_stats_key(), {})
+        return {
+            "load": cache_.get("load"),
+            "mem": cache_.get("mem"),
+            "swap": cache_.get("swap"),
+            "uptime": cache_.get("uptime"),
+        }
 
     def _get_stats_key(self):
         return "stats-{}-{}".format(self.id, self.ipaddress)
