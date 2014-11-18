@@ -44,6 +44,11 @@
             return ctrl.show_hide[group] === true;
         }
 
+        this.home = function(){
+            $location.path("/servers");
+        }
+
+
     });
 
 })();

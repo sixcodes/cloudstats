@@ -23,7 +23,9 @@
 								<h3>{{ s.name }}</h3>
 							</header>
 							<ul>
-                                <li ng-repeat="(stat_name, stat_value) in s.stats"> {{ stat_name }} <span>{{ stat_value }}</span> </li>
+                                <li ng-repeat="(stat_name, stat_value) in s.stats" title="titulo">
+                                    {{ stat_name }} <span>{{ stat_value }}</span>
+                                </li>
 							</ul>
 						</article>
 					</div>
