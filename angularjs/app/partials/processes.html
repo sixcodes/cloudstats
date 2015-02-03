@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+	<body>
+		<div class="wrapper">
+			<header class="main-header" ng-click="processesCtrl.home()">
+				<h1>CloudStats</h1>
+			</header>
+			<main>
+				<section class="row">
+					<div class="col-xs-12 col-sm-4">
+						<h2>{{server.name}} <span>Processos</span></h2>
+					</div>
+					<div class="col-xs-12 col-sm-8 controls">
+						<a ng-href="http://{{server.ipaddress}}:9000" target="_new_{{server.name}}" class="btn"><i class="icon-link"></i> http://{{server.ipaddress}}:9000</a>
+					</div>
+				</section>
+				<section class="row widgets process">
+					<div class="col-xs-12">
+						<article class="js_show_processes" ng-repeat="(g_name, g_processes) in processes['by_group']">
+							<header ng-click="processesCtrl.toggle_showprocess(g_name)">
+								<i class="icon-angle-down"></i>
+								<h3>{{g_name}}</h3>
+								<span>{{g_process.length}}</span>
+							</header>
+							<ul ng-show="processesCtrl.should_show(g_name)">
+								<li ng-repeat="process in g_processes">
+									{{process.name}}
+									<span>{{process.description}}</span>
+                                    <span ng-show="processesCtrl.can_interact_with_process(process)">
+                                        <i class="icon-play" ng-show="!processesCtrl.is_running(process)" ng-click="processesCtrl.start(server, process)"></i>
+                                        <i class="icon-stop" ng-show="processesCtrl.is_running(process)" ng-click="processesCtrl.stop(server, process)"></i>
+                                    </span>
+								</li>
+							</ul>
+						</article>
+					</div>
+				</section>				
+			</main>
+		</div>	
+	</body>
+</html>

@@ -35,9 +35,6 @@ describe("Server Controller", function() {
             {id: 2, name: "s2", ipaddress: "8.8.8.8"}
         ]});
 
-        httpbackend.expectGET("/api/servers/1/processes").respond(200, []);
-        httpbackend.expectGET("/api/servers/2/processes").respond(200, []);
-
         var controller = makeController();
         httpbackend.flush();
         expect(scope.servers).toBeDefined();

@@ -1,26 +1,83 @@
-<div>
-    <h3>Servers Listing</h3>
-
-    <div ng-repeat="s in servers">
-
-
-            <div><a ng-href="http://{{ s.ipaddress }}:9000/"> {{ s.name }} </a> | {{ s.ipaddress }} <span ng-hide="server_processes[s.id]"> (loading..)</span></div>
-            <div><a ng-click="serverCtrl.all_processes(s)">refresh</a></div>
-            <div ng-repeat="(stat_name, stat_value) in s.stats">
-                {{ stat_name }}: {{ stat_value }} |
-            </div>
-            <div ng-hide="!server_processes[s.id]">
-                <h3>Processos</h3>
-                <div ng-repeat="(p_name, p) in server_processes[s.id]">
-                        {{ p.group }}:{{ p.name }} ({{ p.description }})
-                        <span ng-show="serverCtrl.can_interact_with_process(p)">
-                            <a ng-href="" ng-click="serverCtrl.start(s, p)" ng-show="!serverCtrl.is_running(p.statename)" >| start</a>
-                            <a ng-href="" ng-click="serverCtrl.stop(s, p)" ng-show="serverCtrl.is_running(p.statename)">| stop</a>
-                            <a ng-href="" ng-click="serverCtrl.restart(s, p)" ng-show="serverCtrl.is_running(p.statename)">| restart</a>
-                        </span>
-                </div>
-
-            </div>
-
-    </div>
-</div>
+<!doctype html>
+<html>
+	<body>
+		<div class="wrapper">
+			<header class="main-header">
+				<h1>CloudStats</h1>
+			</header>
+			<main>
+				<section class="row">
+					<div class="col-xs-12 col-sm-6">
+						<h2>Servidores</h2>
+					</div>
+					<div class="col-xs-12 col-sm-6 controls">
+						<!-- a href="javascript:void(0);" class="btn js_add_server"><i class="icon-plus"></i> Adicionar servidor</a -->
+						<input type="text" placeholder="Digite o nome do servidor" ng-model="searchText">
+						<button type="button"><i class="icon-search"></i></button>
+					</div>
+				</section>
+				<section class="row widgets server">
+					<div class="col-xs-12">
+						<article ng-repeat="s in servers | filter:searchText" title="Selecione para verificar este servidor." ng-click="serverCtrl.get_detail(s)">
+							<header>
+								<h3>{{ s.name }}</h3>
+							</header>
+							<ul>
+                                <li ng-repeat="(stat_name, stat_value) in s.stats" title="titulo">
+                                    {{ stat_name }} <span>{{ stat_value }}</span>
+                                </li>
+							</ul>
+						</article>
+					</div>
+				</section>				
+			</main>
+		</div>
+		<div class="slider-box" style="display:none;">
+			<form class="default-form">
+				<section class="wrapper">
+					<header>
+						<h1>Adicionar servidor</h1>
+					</header>
+					<div class="content">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<label for="name">Nome</label>
+								<input type="text" id="name">
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<label for="url">URL do servidor</label>
+								<input type="text" id="url">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<label for="login">Login</label>
+								<input type="text" id="login">
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<label for="password">Senha</label>
+								<input type="text" id="password">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<label for="email">E-mail do administrador</label>
+								<input type="text" id="email">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<label for="obs">Observações gerais</label>
+								<textarea id="obs"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="footer">
+						<button type="button" class="btn btn-close js_add_server">Cancelar</button>
+						<button type="button" class="btn btn-main">Adicionar servidor</button>
+					</div>
+				</section>
+			</form>
+		</div>
+	</body>
+</html>
