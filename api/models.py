@@ -15,7 +15,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 class Server(models.Model):
 
     name = models.CharField(max_length=64, null=False, blank=False)
-    ipaddress = models.IPAddressField()
+    ipaddress = models.CharField(max_length=32, null=False, blank=False)
     supervisord_port = models.IntegerField(null=True, blank=True)
     supervisord_pwd = models.CharField(max_length=32, null=True, blank=True)
 
