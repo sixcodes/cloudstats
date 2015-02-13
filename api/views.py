@@ -172,4 +172,9 @@ class CronEntryView(viewsets.ModelViewSet):
         return Response(request.DATA, status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
+        q = self.get_queryset().filter(cronname=request.DATA.get("cronname"))
+        if q.exists():
+            cron = q.first()
+            cron.delete()
+
         return Response(request.DATA, status.HTTP_200_OK)
