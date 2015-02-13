@@ -163,6 +163,12 @@ class CronEntryView(viewsets.ModelViewSet):
     serializer_class = CronEntrySerializer
 
     def create(self, request, *args, **kwargs):
+        cron = CronEntry(**request.DATA)
+        q = self.get_queryset().filter(cronname=request.DATA.get("cronname"))
+        if q.exists():
+            cron.id = q.first().id
+            print "id=", q.first().id
+        cron.save()
         return Response(request.DATA, status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
