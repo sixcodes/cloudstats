@@ -10,6 +10,7 @@ router.register(r"servers", views.ServerView)\
       .register(r"processes", views.ServerProcessView, base_name="server-processes", parents_query_lookups=['server'])
 
 router.register(r"stats", views.StatsView)
+router.register(r"crons", views.CronEntryView)
 
 
 urlpatterns = patterns('',

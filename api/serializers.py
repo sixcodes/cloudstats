@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.core.cache import cache
 
-from api.models import Server, Stats, ServerProcess
+from api.models import Server, Stats, ServerProcess, CronEntry
 
 
 class ServerSerializer(serializers.HyperlinkedModelSerializer):
@@ -26,3 +26,9 @@ class StatsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Stats
         fields = ('mem', 'load', 'swap', 'uptime')
+
+
+class CronEntrySerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = CronEntry

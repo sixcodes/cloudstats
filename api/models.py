@@ -54,3 +54,16 @@ class Permission(models.Model):
     server = models.ForeignKey(Server, null=False, blank=False, related_name='permissions')
     process_name = models.CharField(max_length=256, null=True, blank=True)
     user = models.ForeignKey(User, null=False, blank=False)
+
+
+class CronEntry(models.Model):
+
+    servername = models.CharField(max_length=128, null=False, blank=False)
+    cronname = models.CharField(max_length=128, null=False, blank=False)
+    command = models.CharField(max_length=128, null=False, blank=False)
+    minute = models.CharField(max_length=32, null=False, blank=False)
+    hour = models.CharField(max_length=32, null=False, blank=False)
+    day = models.CharField(max_length=32, null=False, blank=False)
+    month = models.CharField(max_length=32, null=False, blank=False)
+    weekday = models.CharField(max_length=32, null=False, blank=False)
+    user = models.CharField(max_length=128, null=False, blank=False)

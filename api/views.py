@@ -7,9 +7,9 @@ from rest_framework.response import Response
 from rest_framework import status, mixins, generics
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from api.models import Server, Stats, ServerProcess, Permission
+from api.models import Server, Stats, ServerProcess, Permission, CronEntry
 from api import permissions
-from api.serializers import ServerSerializer, StatsSerializer
+from api.serializers import ServerSerializer, StatsSerializer, CronEntrySerializer
 
 
 def _get_client_ip_address(request):
@@ -139,7 +139,6 @@ class ServerProcessView(NestedViewSetMixin,
         return Response(status=202, data=resp)
 
 
-
 class StatsView(viewsets.ModelViewSet):
     """
     Post new values for stats: mem, load, disk space, etc
@@ -156,3 +155,15 @@ class StatsView(viewsets.ModelViewSet):
         key = "stats-{}-{}".format(server[0].id, server[0].ipaddress)
         cache.set(key, request.DATA)
         return Response(request.DATA, status.HTTP_201_CREATED)
+
+
+class CronEntryView(viewsets.ModelViewSet):
+
+    queryset = CronEntry.objects.all()
+    serializer_class = CronEntrySerializer
+
+    def create(self, request, *args, **kwargs):
+        return Response(request.DATA, status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(request.DATA, status.HTTP_200_OK)
